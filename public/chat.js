@@ -32,6 +32,8 @@ const renderChat = () => {
   socket.connect();
 
   document.body.innerHTML = "";
+
+  // room
   let roomandChatContainer = document.createElement("div");
   roomandChatContainer.classList.add("roomAndChatContainer");
 
@@ -54,9 +56,12 @@ const renderChat = () => {
   roomCreateBtn.innerText = "Skapa rum / Gå med";
   roomCreateBtn.classList.add("roomCreateBtn");
 
+  // rum som användare kopplas till
   roomCreateBtn.addEventListener("click", () => {
     let roomToJoin = document.getElementById("roomCreateInput").value;
     joinedRoom = roomToJoin;
+    document.getElementsByClassName("joinedRoomHeader")[0].innerText =
+      joinedRoom;
     socket.emit("join", roomToJoin);
   });
 
@@ -64,6 +69,15 @@ const renderChat = () => {
 
   let chatContainer = document.createElement("div");
   chatContainer.classList.add("chatContainer");
+
+  let joinedRoomHeader = document.createElement("h1");
+  joinedRoomHeader.classList.add("joinedRoomHeader");
+
+  // meddelandet som skickas av en client
+  chatBox = document.createElement("div");
+  chatBox.classList.add("chatBox");
+
+  chatContainer.append(joinedRoomHeader, chatBox);
 
   roomandChatContainer.append(roomBox, chatContainer);
 
@@ -81,7 +95,8 @@ const renderChat = () => {
   sendBtnText.innerHTML = "skicka";
 
   sendBtn.addEventListener("click", () => {
-    let message = document.getElementsByClassName("chatInput");
+    let message = document.getElementsByClassName("chatInput")[0].value;
+    console.log(message);
     socket.emit("message", message, nickname, joinedRoom);
   });
 
@@ -90,5 +105,26 @@ const renderChat = () => {
 
   document.body.append(roomandChatContainer, chatInputBox);
 };
+
+// skickar meddelande till surven
+socket.on("message", (message, sender, senderId) => {
+  console.log(senderId, socket.id);
+
+  let chatBox = document.getElementsByClassName("chatBox")[0];
+
+  let chatMessage = document.createElement("div");
+  chatMessage.classList.add("chatMessage");
+  chatMessage.innerText = sender + " : " + message;
+
+  chatBox.append(chatMessage);
+
+  if (senderId == socket.id) {
+    chatMessage.style.justifyContent = "flex-end";
+    chatMessage.style.backgroundColor = "green";
+  }
+
+  chatBox.append(chatMessage);
+  chatBox.scrollTo(0, chatbox.scrollHeight);
+});
 
 window.addEventListener("load", renderNamePage);

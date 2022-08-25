@@ -38,13 +38,6 @@ button {
   flex-grow: 1;
   width: 100%;
 }
-.chatContainer {
-  display: flex;
-  height: 25vw;
-  width: 50vh;
-  background-color: #00b7ff;
-  border: 1px solid black;
-}
 
 .chatInputBox {
   flex-grow: 1;
@@ -58,5 +51,37 @@ button {
   flex-grow: 5;
 }
 
-.sendBtn {
+.roomBox {
+  background-color: red;
+}
+
+.joinedRoomHeader {
+  text-align: center;
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow-y: scroll;
+  flex-grow: 1;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 50vw;
+  width: 50vh;
+  background-color: #00b7ff;
+  border: 1px solid black;
+}
+
+.chatMessage {
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+  padding-right: 1em;
+  height: 3em;
+  border-radius: 5px;
+  margin: 1%;
 }

@@ -16,6 +16,11 @@ io.on("connection", socket => {
     console.log(io.sockets.adapter.rooms);
   });
 
+  socket.on("message", (message, nickname, room) => {
+    console.log(message, nickname, room);
+    io.in(room).emit("message", message, nickname, socket.id);
+  });
+
   socket.on("disconnected", () => {
     console.log("user disconnected...");
   });
