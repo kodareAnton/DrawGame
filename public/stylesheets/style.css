@@ -32,3 +32,31 @@ button {
   border: none;
   color: white;
 }
+
+.roomAndChatContainer {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+}
+.chatContainer {
+  display: flex;
+  height: 25vw;
+  width: 50vh;
+  background-color: #00b7ff;
+  border: 1px solid black;
+}
+
+.chatInputBox {
+  flex-grow: 1;
+  position: absolute;
+  bottom: 0px;
+}
+
+.chatInput {
+  border: 1px solid red;
+  height: 50%;
+  flex-grow: 5;
+}
+
+.sendBtn {
+}

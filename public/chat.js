@@ -20,12 +20,17 @@ const renderNamePage = () => {
   let nextButton = document.createElement("button");
   nextButton.classList.add("nextButton");
   nextButton.innerText = "Gå till chatten";
+  nextButton.addEventListener("click", renderChat);
 
   container.append(welcomeHeader, nameInput, nextButton);
   document.body.append(container);
 };
 
+//// Som vi ska använda
+
 const renderChat = () => {
+  socket.connect();
+
   document.body.innerHTML = "";
   let roomandChatContainer = document.createElement("div");
   roomandChatContainer.classList.add("roomAndChatContainer");
@@ -33,12 +38,36 @@ const renderChat = () => {
   let roomBox = document.createElement("div");
   roomBox.classList.add("roomBox");
 
+  let welcomeHeader = document.createElement("h1");
+  welcomeHeader.innerText = nickname;
+  welcomeHeader.classList.add("welcomeHeader");
+
+  let inputHeader = document.createElement("h2");
+  inputHeader.innerText = "gå med i rum";
+  inputHeader.classList.add("inputHeader");
+
+  let roomCreateInput = document.createElement("input");
+  roomCreateInput.id = "roomCreateInput";
+  roomCreateInput.placeholder = "Namn på rum";
+
+  let roomCreateBtn = document.createElement("button");
+  roomCreateBtn.innerText = "Skapa rum / Gå med";
+  roomCreateBtn.classList.add("roomCreateBtn");
+
+  roomCreateBtn.addEventListener("click", () => {
+    let roomToJoin = document.getElementById("roomCreateInput").value;
+    joinedRoom = roomToJoin;
+    socket.emit("join", roomToJoin);
+  });
+
+  roomBox.append(welcomeHeader, inputHeader, roomCreateInput, roomCreateBtn);
+
   let chatContainer = document.createElement("div");
   chatContainer.classList.add("chatContainer");
 
   roomandChatContainer.append(roomBox, chatContainer);
 
-  // chatten
+  // chatten (lower div)
   let chatInputBox = document.createElement("div");
   chatInputBox.classList.add("chatInputBox");
 
@@ -50,6 +79,11 @@ const renderChat = () => {
   sendBtn.classList.add("sendBtn");
   let sendBtnText = document.createElement("h3");
   sendBtnText.innerHTML = "skicka";
+
+  sendBtn.addEventListener("click", () => {
+    let message = document.getElementsByClassName("chatInput");
+    socket.emit("message", message, nickname, joinedRoom);
+  });
 
   sendBtn.append(sendBtnText);
   chatInputBox.append(chatInput, sendBtn);
