@@ -67,6 +67,7 @@ const renderChat = () => {
 
   roomBox.append(welcomeHeader, inputHeader, roomCreateInput, roomCreateBtn);
 
+  //chatt
   let chatContainer = document.createElement("div");
   chatContainer.classList.add("chatContainer");
 
@@ -103,7 +104,8 @@ const renderChat = () => {
   sendBtn.append(sendBtnText);
   chatInputBox.append(chatInput, sendBtn);
 
-  document.body.append(roomandChatContainer, chatInputBox);
+  document.body.append(roomandChatContainer);
+  chatContainer.append(chatInputBox);
 };
 
 // skickar meddelande till surven
