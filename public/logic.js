@@ -1,61 +1,88 @@
-import { post } from "../app.js";
 import { getSquare, getColor, drawGrid, fillSquare } from "./modules/canvas.mjs"
 
-  var canvas = document.getElementById('myCanvas');
-  var context = canvas.getContext('2d');
-  drawGrid(context);
 
-  //Eventlyssnaren som kör funktionerna vid musklick
-  canvas.addEventListener('click', function(evt) {
-      //Hämtar positionen för klickad ruta
-      var mousePos = getSquare(canvas, evt);
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+drawGrid(context);
 
-      //Hämtar färgen för klickad ruta
-      var color = getColor(context, mousePos.x, mousePos.y)
+//Eventlyssnaren som kör funktionerna vid musklick
+canvas.addEventListener('click', function(evt) {
+    //Hämtar positionen för klickad ruta
+    var mousePos = getSquare(canvas, evt);
 
-      //Färglägger klickad ruta
-      fillSquare(context, mousePos.x, mousePos.y, color)
-  }, false);
+    //Hämtar färgen för klickad ruta
+    var color = getColor(context, mousePos.x, mousePos.y)
 
-let saveBtn = document.createElement("button")
-document.body.append(saveBtn)
+    //Färglägger klickad ruta
+    fillSquare(context, mousePos.x, mousePos.y, color)
+}, false);
 
 
+/* Sparar bilden */
+
+let saveBtn = document.createElement("button");
+let saveBtnText = "Spara bilden";
+
+saveBtn.append(saveBtnText)
+document.body.append(saveBtn);
 
 
-  
-
-
-saveBtn.addEventListener("click", async () => {
+saveBtn.addEventListener("click", async (e) => {
     const link = document.createElement('a');
     link.download = 'download.png';
     link.href = canvas.toDataURL();
-    console.log("img link: " + link.href)
     // link.click();
     // link.delete;
-    //postImage(link.href);
-    let test = {imgUrl: "kanske så?"}
-    postImage(test);
-    console.log("sist i eventlistener")
+    console.log(link.href);
+    let imgToSave = {imageUrl: link.href};
+    console.log(imgToSave)
+
+    let response = await fetch('http://localhost:4000/images', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(imgToSave)
+    })
+
+    console.log(response);
+    
 })
 
-async function postImage (image) {
-    try {
-        await fetch('http://localhost:4000/images', {
-            Method: 'POST',
-            Headers: {
-              Accept: 'application.json',
-              'Content-Type': 'application/json'
-            },
-            Body: JSON.stringify(image),
-            Cache: 'default'
-          })
-    
+/* Galleriet */
+
+let galleryBtn = document.createElement("button");
+let galleryBtnText = "Visa galleri";
+
+let imageContainer = document.createElement("div");
+imageContainer.classList.add("imageContainer");
+
+
+galleryBtn.addEventListener("click", async () => {
+
+  try {
+      let response = await fetch("http://localhost:4000/images")
+      console.log(response)
+      let data = await response.json()
+        
+      renderImages(data);
     } catch (error) {
-        console.log(error);
-    } 
+      console.log(error)
+    }
+    
+    
+})
 
+galleryBtn.append(galleryBtnText)
+document.body.append(galleryBtn, imageContainer);
+
+function renderImages(data) {
+  for (let i=0; i<data.length; i++) {
+    
+    let img = document.createElement("img");
+    img.src = data[i].imageUrl
+    console.log(data[i].imageUrl)
+    imageContainer.append(img)
   }
-
- 
-
+  
+}

@@ -22,8 +22,8 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const images = await ImageModel.find()
-        // res.json(images);
-       // res.send(images);
+        res.json(images);
+        //res.send(images);
     } catch (error) {
         console.log(error)
     }

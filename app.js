@@ -23,8 +23,6 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
 
-
-
 /* Startar igång servern och ansluter till mongoose */
 
 async function init() {
@@ -32,7 +30,7 @@ async function init() {
         await mongoose.connect("mongodb://localhost:27017/drawgamegallery")
         console.log("connected to database")
     } catch (error) {
-        console.log("error" + error);
+       console.log("error" + error);
     }
     app.listen(4000);
 }
