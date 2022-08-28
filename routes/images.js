@@ -7,6 +7,9 @@ router.use(cors());
 
 /* Endpoints för galleriet */
 
+
+// Spara bild
+
 router.post("/", async (req, res) => {
     try {
         const image = new ImageModel(req.body);
@@ -16,14 +19,14 @@ router.post("/", async (req, res) => {
         console.log("Något gick fel" + error)
     }
 
-    // res.status(201).json(image);
 });
+
+// Hämta alla bilder
 
 router.get("/", async (req, res) => {
     try {
         const images = await ImageModel.find()
         res.json(images);
-        //res.send(images);
     } catch (error) {
         console.log(error)
     }

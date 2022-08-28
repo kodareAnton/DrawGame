@@ -28,12 +28,12 @@ document.body.append(saveBtn);
 
 
 saveBtn.addEventListener("click", async (e) => {
+    // Konverterar bilden till en sträng
     const link = document.createElement('a');
     link.download = 'download.png';
     link.href = canvas.toDataURL();
     // link.click();
     // link.delete;
-    console.log(link.href);
     let imgToSave = {imageUrl: link.href};
     console.log(imgToSave)
 
