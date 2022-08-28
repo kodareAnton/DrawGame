@@ -8,7 +8,9 @@
     <!-- canvas tavlan -->
     <canvas id="myCanvas" width="301" height="301"></canvas>
 
+    <script src="socket.io/socket.io.js"></script>
     <script>
+      const socket = io();
       // Funktion för att identifiera vilken ruta spelaren klickar på
       function getSquare(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
@@ -82,7 +84,18 @@
 
           //Färglägger klickad ruta
           fillSquare(context, mousePos.x, mousePos.y, color)
+          var canvasDraw = document.getElementById("myCanvas").toDataURL();
+          socket.emit("draw", canvasDraw);
       }, false);
+
+      socket.on("draw", function(draw){
+        var img = new Image();
+        img.onload=start;
+        img.src = draw;
+        function start(){
+          context.drawImage(img, 0,0)
+        }
+      })
 
     </script>
 
