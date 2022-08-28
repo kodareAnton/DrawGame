@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ImageModel = require("../models/ImageModel")
 
-
+/* Endpoints för galleriet */
 
 router.post("/", async (req, res) => {
     console.log("body" + req.body)
