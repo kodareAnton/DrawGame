@@ -84,8 +84,9 @@
 
           //Färglägger klickad ruta
           fillSquare(context, mousePos.x, mousePos.y, color)
-          var canvasDraw = document.getElementById("myCanvas").toDataURL();
-          socket.emit("draw", canvasDraw);
+
+          var canvasURL = canvas.toDataURL();
+          socket.emit("draw", canvasURL);
       }, false);
 
       socket.on("draw", function(draw){
