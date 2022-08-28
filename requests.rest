@@ -1,0 +1,10 @@
+POST http://localhost:4000/images
+Content-Type: application/json
+
+{
+    "imageUrl": "Massa text"
+}
+
+###
+
+GET http://localhost:4000/images
