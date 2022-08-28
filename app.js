@@ -20,6 +20,8 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
 
+/* Startar igång servern och ansluter till mongoose */
+
 async function init() {
     try {
         await mongoose.connect("mongodb://localhost:27017/drawgamegallery")
