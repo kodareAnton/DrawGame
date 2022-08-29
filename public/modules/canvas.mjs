@@ -21,7 +21,7 @@
     return ((r << 16) | (g << 8) | b).toString(16);
   }
 
-  //Funktion för att rita upp rutnätet på spelytan. Varje ruta är 10px
+  //Funktion för att rita upp rutnätet på spelytan. Varje ruta är 20px
   export function drawGrid(context) {
       for (var x = 0.5; x < 301; x += 20) {
         context.moveTo(x, 0);
