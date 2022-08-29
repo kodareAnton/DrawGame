@@ -145,6 +145,10 @@ galleryBtn.append(galleryBtnText)
 root.append(galleryBtn, imageContainer);
 
 function renderImages(data) {
+  
+  // Tömmer galleriet och fyller på med de senaste bilderna
+  imageContainer.innerHTML = "";
+
   for (let i=0; i<data.length; i++) {
     
     let img = document.createElement("img");
