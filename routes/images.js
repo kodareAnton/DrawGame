@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
     } catch (error) {
         console.log("Något gick fel" + error)
     }
-
 });
 
 // Hämta alla bilder
