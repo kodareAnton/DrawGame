@@ -19,6 +19,78 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
+
+let users = [];
+
+let userColor;
+
+//Användare ansluter
+function userJoin(id, username, room) {
+  console.log("HÄR ÄR VI" + users);
+  if (users.length === 0 || users.length === 4 || users.length === 8) {
+    userColor = "blue";
+  } else if (users.length === 1 || users.length === 5 || users.length === 9) {
+    userColor = "green";
+  } else if (users.length === 2 || users.length === 6 || users.length === 10) {
+    userColor = "yellow";
+  } else if (users.length === 3 || users.length === 7 || users.length === 11) {
+    userColor = "red";
+  }
+  const user = { id, username, room, userColor };
+  users.push(user);
+  return user;
+}
+
+//Användare lämnar chat
+
+function userLeave(id) {
+  const index = users.findIndex((user) => user.id === id);
+  if (index !== -1) {
+    return users.splice(index, 1)[0];
+  }
+}
+
+io.on("connection", function (socket) {
+  console.log("user connected");
+
+  socket.on("joinRoom", ({ username, room }) => {
+    console.log("Vill också se" + socket.id);
+    let playRoom;
+    console.log(Array.from(io.sockets.adapter.rooms).length);
+    if (5 >= Array.from(io.sockets.adapter.rooms).length > 0) {
+      playRoom = room;
+    }
+    if (
+      Array.from(io.sockets.adapter.rooms).length > 5 &&
+      Array.from(io.sockets.adapter.rooms).length <= 10
+    ) {
+      playRoom = room + "1";
+    } else if (Array.from(io.sockets.adapter.rooms).length > 10) {
+      playRoom = room + "2";
+    }
+
+    const user = userJoin(socket.id, username, playRoom);
+
+    console.log(
+      "Vill se " +
+        user.userColor +
+        " " +
+        user.username +
+        " " +
+        user.room +
+        " " +
+        socket.id
+    );
+    socket.join(user.room);
+  });
+
+  //Användare lämnar
+  socket.on("disconnect", () => {
+    console.log(socket.id + "User disconnected");
+    const user = userLeave(socket.id);
+  });
+});
+
 io.on("connection", function(socket){
     console.log("user connected");
 
