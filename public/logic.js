@@ -49,19 +49,21 @@ buttonGoToRoom.addEventListener("click", startGame);
 function startGame() {
   let room = "Room";
   username = inputUser.value;
+  if (username.length === 0) {
+    return (inputUser.placeholder = "Måste vara ifyllt");
+  }
+  root.style.display ="none";
+  document.getElementById("myCanvas").style.display ="block"
+  saveBtn.append(saveBtnText)
+  document.body.append(saveBtn);
+
   socket.emit("joinRoom", { username, room });
 
   socket.on("roomUsers", ({ roomname, users }) => {
     userArray = users;
-
-    if (username.length === 0) {
-      return (inputUser.placeholder = "Måste vara ifyllt");
-    }
+    
   });
 }
-
-
-
 
 
 // //CANVAS
@@ -87,8 +89,8 @@ canvas.addEventListener('click', function(evt) {
 let saveBtn = document.createElement("button");
 let saveBtnText = "Spara bilden";
 
-saveBtn.append(saveBtnText)
-document.body.append(saveBtn);
+// saveBtn.append(saveBtnText)
+// document.body.append(saveBtn);
 
 
 saveBtn.addEventListener("click", async (e) => {
@@ -127,15 +129,15 @@ galleryBtn.addEventListener("click", async () => {
       let response = await fetch("http://localhost:3000/images")
       console.log(response)
       let data = await response.json()
-        
+      
       renderImages(data);
     } catch (error) {
       console.log(error)
-    }  
+    }
 })
 
 galleryBtn.append(galleryBtnText)
-document.body.append(galleryBtn, imageContainer);
+root.append(galleryBtn, imageContainer);
 
 function renderImages(data) {
   for (let i=0; i<data.length; i++) {

@@ -1,11 +1,6 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
 
-a {
-  color: #00b7ff;
-}
+
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -73,3 +68,20 @@ input {
 .containerForm {
   margin-top: 10px;
 }
+
+#myCanvas{
+  display: none;
+}
+
+.imageContainer{
+  background-color: rgba(0, 0, 0, 0.445);
+
+}
+
+button {
+  margin:5px;
+}
+
+ img{
+  margin: 10px;
+ }
