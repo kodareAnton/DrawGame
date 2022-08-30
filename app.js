@@ -6,8 +6,8 @@ var mongoose = require("mongoose");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var imagesRouter = require("./routes/images")
-var cors = require("cors")
+var imagesRouter = require("./routes/images");
+var cors = require("cors");
 // const http = require("http").createServer(app);
 
 var app = express();
@@ -27,18 +27,17 @@ app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
 
 /* Startar igång servern och ansluter till mongoose */
- async function init() {
+async function init() {
   try {
-      await mongoose.connect("mongodb://localhost:27017/drawgamegallery")
-      console.log("connected to database")
+    await mongoose.connect("mongodb://localhost:27017/drawgamegallery");
+    console.log("connected to database");
   } catch (error) {
-     console.log("error" + error);
+    console.log("error" + error);
+  }
+  server.listen(3000);
 }
-  server.listen(3000)
 
-}
-
- init();
+init();
 
 let users = [];
 
@@ -64,7 +63,7 @@ function userJoin(id, username, room) {
 //Användare lämnar chat
 
 function userLeave(id) {
-  const index = users.findIndex((user) => user.id === id);
+  const index = users.findIndex(user => user.id === id);
   if (index !== -1) {
     return users.splice(index, 1)[0];
   }
@@ -72,6 +71,10 @@ function userLeave(id) {
 
 io.on("connection", function (socket) {
   console.log("user connected");
+
+  // Botten välkommnar
+  const botName = "Bot Janne ";
+  socket.emit("message", "Välkommen!", botName);
 
   socket.on("joinRoom", ({ username, room }) => {
     console.log("Vill också se" + socket.id);
@@ -91,6 +94,8 @@ io.on("connection", function (socket) {
 
     const user = userJoin(socket.id, username, playRoom);
 
+    // Skickar att username har joinat rummet
+    socket.broadcast.emit("message", username + " har joinat rummet!", botName);
     console.log(
       "Vill se " +
         user.userColor +
@@ -104,18 +109,27 @@ io.on("connection", function (socket) {
     socket.join(user.room);
     socket.on("message", (message, nickname) => {
       console.log(message, nickname, socket.id);
-      io.in(user.room).emit("message", message, nickname, socket.id,user.userColor);
+      io.in(user.room).emit(
+        "message",
+        message,
+        nickname,
+        socket.id,
+        user.userColor
+      );
     });
-    
-  });
 
- 
+    // Bot Janne skickar meddelande om att username har lämnat
+
+    socket.on("disconnect", () => {
+      socket.broadcast.emit("message", username + " lämnade chatten!", botName);
+    });
+  });
 
   //Användare lämnar
-  socket.on("disconnect", () => {
-    console.log(socket.id + "User disconnected");
-    const user = userLeave(socket.id);
-  });
+  // socket.on("disconnect", () => {
+  //   console.log(socket.id + "User disconnected");
+  //   const user = userLeave(socket.id);
+  // });
 });
 
 module.exports = { app: app, server: server };
