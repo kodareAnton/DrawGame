@@ -102,7 +102,14 @@ io.on("connection", function (socket) {
         socket.id
     );
     socket.join(user.room);
+    socket.on("message", (message, nickname) => {
+      console.log(message, nickname, socket.id);
+      io.in(user.room).emit("message", message, nickname, socket.id,user.userColor);
+    });
+    
   });
+
+ 
 
   //Användare lämnar
   socket.on("disconnect", () => {

@@ -2,6 +2,8 @@ import { getSquare, getColor, drawGrid, fillSquare } from "./modules/canvas.mjs"
 
 let socket = io();
 
+
+
 socket.on("connect", () => {
   console.log(socket.id + " A user joined");
 });
@@ -42,6 +44,7 @@ containerForm.append(inputUser, playroomListContainer, buttonGoToRoom);
 //Addera till rullista
 
 let userArray = [];
+let nickname = ""
 
 let username;
 buttonGoToRoom.addEventListener("click", startGame);
@@ -49,19 +52,23 @@ buttonGoToRoom.addEventListener("click", startGame);
 function startGame() {
   let room = "Room";
   username = inputUser.value;
+  nickname = username
+  if (username.length === 0) {
+    return (inputUser.placeholder = "Måste vara ifyllt");
+  }
+  root.style.display ="none";
+  document.getElementById("myCanvas").style.display ="block"
+  document.getElementById("chatt").style.display ="block"
+  saveBtn.append(saveBtnText)
+  document.getElementById("btnContainer").append(saveBtn);
+
   socket.emit("joinRoom", { username, room });
 
   socket.on("roomUsers", ({ roomname, users }) => {
     userArray = users;
-
-    if (username.length === 0) {
-      return (inputUser.placeholder = "Måste vara ifyllt");
-    }
+    
   });
 }
-
-
-
 
 
 // //CANVAS
@@ -87,8 +94,8 @@ canvas.addEventListener('click', function(evt) {
 let saveBtn = document.createElement("button");
 let saveBtnText = "Spara bilden";
 
-saveBtn.append(saveBtnText)
-document.body.append(saveBtn);
+// saveBtn.append(saveBtnText)
+// document.body.append(saveBtn);
 
 
 saveBtn.addEventListener("click", async (e) => {
@@ -127,15 +134,15 @@ galleryBtn.addEventListener("click", async () => {
       let response = await fetch("http://localhost:3000/images")
       console.log(response)
       let data = await response.json()
-        
+      
       renderImages(data);
     } catch (error) {
       console.log(error)
-    }  
+    }
 })
 
 galleryBtn.append(galleryBtnText)
-document.body.append(galleryBtn, imageContainer);
+root.append(galleryBtn, imageContainer);
 
 function renderImages(data) {
   for (let i=0; i<data.length; i++) {
@@ -145,5 +152,120 @@ function renderImages(data) {
     console.log(data[i].imageUrl)
     imageContainer.append(img)
   }
-  
 }
+  // const renderChat = () => {
+    // socket.connect();
+  
+    // document.body.innerHTML = "";
+  
+    // room
+    let userName = "";
+    let joinedRoom = "";
+
+    let roomandChatContainer = document.createElement("div");
+    roomandChatContainer.classList.add("roomAndChatContainer");
+  
+    let roomBox = document.createElement("div");
+    roomBox.classList.add("roomBox");
+  
+
+    // let welcomeHeader = document.createElement("h1");
+    // welcomeHeader.innerText = nickname;
+    // welcomeHeader.classList.add("welcomeHeader");
+  
+    // let inputHeader = document.createElement("h2");
+    // inputHeader.innerText = "gå med i rum";
+    // inputHeader.classList.add("inputHeader");
+  
+    // let roomCreateInput = document.createElement("input");
+    // roomCreateInput.id = "roomCreateInput";
+    // roomCreateInput.placeholder = "Namn på rum";
+  
+    // let roomCreateBtn = document.createElement("button");
+    // roomCreateBtn.innerText = "Skapa rum / Gå med";
+    // roomCreateBtn.classList.add("roomCreateBtn");
+  
+    // rum som användare kopplas till
+    // roomCreateBtn.addEventListener("click", () => {
+    //   let roomToJoin = document.getElementById("roomCreateInput").value;
+    //   joinedRoom = roomToJoin;
+    //   document.getElementsByClassName("joinedRoomHeader")[0].innerText =
+    //     joinedRoom;
+    //   socket.emit("join", roomToJoin);
+    // });
+  
+    // roomBox.append(welcomeHeader, inputHeader, roomCreateInput, roomCreateBtn);
+   //chatt
+   let chatContainer = document.createElement("div");
+   chatContainer.classList.add("chatContainer");
+ 
+   let joinedRoomHeader = document.createElement("h1");
+   joinedRoomHeader.classList.add("joinedRoomHeader");
+ 
+   // meddelandet som skickas av en client
+  let chatBox = document.createElement("div");
+   chatBox.classList.add("chatBox");
+ 
+   chatContainer.append(joinedRoomHeader, chatBox);
+ 
+   roomandChatContainer.append(roomBox, chatContainer);
+ 
+   // chatten (lower div)
+   let chatInputBox = document.createElement("div");
+   chatInputBox.classList.add("chatInputBox");
+ 
+   let chatInput = document.createElement("input");
+   chatInput.classList.add("chatInput");
+ 
+   // button + text
+   let sendBtn = document.createElement("button");
+   sendBtn.classList.add("sendBtn");
+   let sendBtnText = document.createElement("h3");
+   sendBtnText.innerHTML = "skicka";
+ 
+   sendBtn.addEventListener("click", () => {
+     let message = document.getElementsByClassName("chatInput")[0].value;
+     console.log(message);
+     socket.emit("message", message, nickname);
+   });
+ 
+   sendBtn.append(sendBtnText);
+   chatInputBox.append(chatInput, sendBtn);
+ 
+   document.body.append(roomandChatContainer);
+   chatContainer.append(chatInputBox);
+ ;
+ 
+ // skickar meddelande till surven
+ socket.on("message", (message, sender, senderId, userColor) => {
+   console.log(senderId, socket.id, userColor);
+ 
+   let chatBox1 = document.getElementsByClassName("chatBox")[0];
+ 
+   let chatMessage = document.createElement("div");
+   chatMessage.classList.add("chatMessage");
+   chatMessage.innerText = sender + " : " + message;
+ 
+   chatBox1.append(chatMessage);
+ 
+   if (senderId == socket.id) {
+     chatMessage.style.justifyContent = "flex-end";
+   }
+   if(userColor === "green"){
+    chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
+   } else if (userColor === "blue"){
+    chatMessage.style.backgroundColor = "rgba(44, 126, 173, 0.553"
+   }
+   else if (userColor === "yellow") {
+    chatMessage.style.backgroundColor = "rgba(188, 190, 23, 0.575)"
+   }else if(userColor==="red"){
+    chatMessage.style.backgroundColor = "rgba(190, 23, 23, 0.575)"
+   }
+   
+ 
+ 
+   chatBox1.append(chatMessage);
+   chatBox1.scrollTo(0, chatBox1.scrollHeight);
+  });
+// }
+document.getElementById("chatt").append(roomandChatContainer)
