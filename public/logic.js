@@ -215,11 +215,15 @@ galleryBtn.append(galleryBtnText);
 root.append(galleryBtn, imageContainer);
 
 function renderImages(data) {
-  for (let i = 0; i < data.length; i++) {
-    let img = document.createElement("img");
-    img.src = data[i].imageUrl;
-    console.log(data[i].imageUrl);
-    imageContainer.append(img);
+  if (imageContainer.innerHTML !== "") {
+    imageContainer.innerHTML = "";
+  } else {
+    for (let i = 0; i < data.length; i++) {
+      let img = document.createElement("img");
+      img.src = data[i].imageUrl;
+      console.log(data[i].imageUrl);
+      imageContainer.append(img);
+    }
   }
 }
 // const renderChat = () => {

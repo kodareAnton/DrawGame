@@ -100,13 +100,14 @@ io.on("connection", function (socket) {
 
   // Botten välkommnar
   const botName = "Bot Janne ";
+  let username = "";
   socket.emit("message", "Välkommen!", botName);
 
   socket.on("joinRoom", ({ username, room }) => {
     console.log("Vill också se" + socket.id);
 
     const user = userJoin(socket.id, username, room);
-
+    username = username;
     // Skickar att username har joinat rummet
     socket.broadcast.emit("message", username + " har joinat rummet!", botName);
     console.log(
