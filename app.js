@@ -78,7 +78,6 @@ function userJoin(id, username, room) {
 //Användare lämnar chat
 
 function userLeave(id) {
-
   const index = usersArray.findIndex((user) => user.id === id);
 
   if (index !== -1) {
@@ -125,19 +124,14 @@ io.on("connection", function (socket) {
       console.log(message, nickname, socket.id);
 
       io.in(user.playRoom).emit(
-
         "message",
         message,
         nickname,
         socket.id,
         user.userColor
       );
-
     });
 
-    
-
-    });
     //Skicka användare och rum från originallista
     io.to(user.playRoom).emit("usersFromStart", {
       allUsersFromStart: getRoomAllUsers(user.playRoom),
@@ -152,8 +146,8 @@ io.on("connection", function (socket) {
 
   //Användare lämnar
   socket.on("disconnect", () => {
-   // Bot Janne skickar meddelande om att username har lämnat
-   socket.broadcast.emit("message", username + " lämnade chatten!", botName);
+    // Bot Janne skickar meddelande om att username har lämnat
+    socket.broadcast.emit("message", username + " lämnade chatten!", botName);
     console.log(socket.id + "User disconnected");
     const user = userLeave(socket.id);
     if (user) {
@@ -164,12 +158,6 @@ io.on("connection", function (socket) {
       });
     }
   });
-
-  //Användare lämnar
-  // socket.on("disconnect", () => {
-  //   console.log(socket.id + "User disconnected");
-  //   const user = userLeave(socket.id);
-  // });
 });
 
 module.exports = { app: app, server: server };
