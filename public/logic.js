@@ -339,7 +339,7 @@ socket.on("message", (message, sender, senderId, userColor) => {
   if (senderId == socket.id) {
     chatMessage.style.justifyContent = "flex-end";
   }
-<<<<<<< HEAD
+
   if (userColor === "#008000") {
     chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
   } else if (userColor === "#0000FF") {
@@ -349,20 +349,6 @@ socket.on("message", (message, sender, senderId, userColor) => {
   } else if (userColor === "#FF0000") {
     chatMessage.style.backgroundColor = "rgba(190, 23, 23, 0.575)";
   }
-=======
-  if(userColor === "#008000"){
-    chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
-   } 
-  else if (userColor === "#0000FF"){
-    chatMessage.style.backgroundColor = "rgba(44, 126, 173, 0.553"
-   }
-  else if (userColor === "#FFFF00") {
-    chatMessage.style.backgroundColor = "rgba(188, 190, 23, 0.575)"
-   }
-  else if(userColor==="#FF0000"){
-    chatMessage.style.backgroundColor = "rgba(190, 23, 23, 0.575)"
-   }
->>>>>>> 247981477284074256304b1f55e8399c762094fc
 
   chatBox1.append(chatMessage);
   chatBox1.scrollTo(0, chatBox1.scrollHeight);
