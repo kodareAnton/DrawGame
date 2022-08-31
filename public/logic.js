@@ -4,12 +4,15 @@ import {
   drawGrid,
   fillSquare,
 } from "./modules/canvas.mjs";
+import hej from "./modules/chat.mjs";
 
 let socket = io();
 
 socket.on("connect", () => {
   console.log(socket.id + " A user joined");
 });
+
+hej()
 
 //Header element
 let header = document.getElementById("header");
