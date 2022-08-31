@@ -58,13 +58,17 @@ function userJoin(id, username, room) {
   }
 
   if (users.length === 0 || users.length === 4 || users.length === 8) {
-    userColor = "blue";
+    //blue
+    userColor = "#0000FF";
   } else if (users.length === 1 || users.length === 5 || users.length === 9) {
-    userColor = "green";
+    //green
+    userColor = "#008000";
   } else if (users.length === 2 || users.length === 6 || users.length === 10) {
-    userColor = "yellow";
+    //yellow
+    userColor = "#FFFF00";
   } else if (users.length === 3 || users.length === 7 || users.length === 11) {
-    userColor = "red";
+    //red
+    userColor = "#FF0000";
   }
   const user = { id, username, playRoom, userColor };
   users.push(user);
@@ -142,6 +146,11 @@ io.on("connection", function (socket) {
     io.to(user.playRoom).emit("roomUsers", {
       room: user.playRoom,
       allUsersInRoom: getRoomUsers(user.playRoom),
+    });
+
+    //Spelplanen men spelarens drag
+    socket.on("draw", function(draw){
+      io.emit("draw", draw);
     });
   });
 

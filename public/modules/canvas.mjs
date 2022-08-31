@@ -38,16 +38,14 @@
   }
 
   //Funktion för att fylla i rutan med en färg
-  export function fillSquare(context, x, y, color){
+  export function fillSquare(context, x, y, color, userColor){
       //Kontrollerar om rutan är i spelarens färg och färgar/avfärgar utifrån detta
-      console.log(color);
-      
-      if (color === "#3864ab"){
+      if (color === userColor){
         context.fillStyle = "#ffffff"
         context.fillRect(x,y,19,19);
       }
       else if(color === "#000000"|| "#ffffff" ){
-        context.fillStyle = "#3864ab"
+        context.fillStyle = userColor
         context.fillRect(x,y,19,19);
       }
       else(
