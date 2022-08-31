@@ -143,6 +143,11 @@ io.on("connection", function (socket) {
       room: user.playRoom,
       allUsersInRoom: getRoomUsers(user.playRoom),
     });
+
+    //Spelplanen men spelarens drag
+    socket.on("draw", function(draw){
+      io.emit("draw", draw);
+    });
   });
 
   //Användare lämnar
