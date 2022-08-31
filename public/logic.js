@@ -321,13 +321,13 @@ socket.on("message", (message, sender, senderId, userColor) => {
   if (senderId == socket.id) {
     chatMessage.style.justifyContent = "flex-end";
   }
-  if (userColor === "green") {
+  if (userColor === "#008000") {
     chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
-  } else if (userColor === "blue") {
+  } else if (userColor === "#0000FF") {
     chatMessage.style.backgroundColor = "rgba(44, 126, 173, 0.553";
-  } else if (userColor === "yellow") {
+  } else if (userColor === "#FFFF00") {
     chatMessage.style.backgroundColor = "rgba(188, 190, 23, 0.575)";
-  } else if (userColor === "red") {
+  } else if (userColor === "#FF0000") {
     chatMessage.style.backgroundColor = "rgba(190, 23, 23, 0.575)";
   }
 
