@@ -132,6 +132,10 @@ input {
   font-size: 2rem;
 }
 
+#btnContainer {
+  display: none;
+}
+
 .imageContainer {
   background-color: rgba(0, 0, 0, 0.445);
 }

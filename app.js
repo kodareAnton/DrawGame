@@ -8,7 +8,12 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var imagesRouter = require("./routes/images");
 var cors = require("cors");
-// const http = require("http").createServer(app);
+const {
+  userJoin,
+  userLeave,
+  getRoomUsers,
+  getRoomAllUsers,
+} = require("./public/modules/user");
 
 var app = express();
 app.use(cors());
@@ -38,66 +43,10 @@ async function init() {
 }
 
 init();
-
+//Array med alla användare från start session
 let users = [];
+//Array med aktuella användare
 let usersArray = [];
-
-let userColor;
-let playRoom;
-
-//Användare ansluter
-function userJoin(id, username, room) {
-  console.log("HÄR ÄR VI" + users);
-
-  if (users.length <= 3) {
-    playRoom = room;
-  } else if (users.length > 3 && users.length <= 7) {
-    playRoom = room + "1";
-  } else if (users.length >= 7) {
-    playRoom = room + "2";
-  }
-
-  if (users.length === 0 || users.length === 4 || users.length === 8) {
-    //blue
-    userColor = "#0000FF";
-  } else if (users.length === 1 || users.length === 5 || users.length === 9) {
-    //green
-    userColor = "#008000";
-  } else if (users.length === 2 || users.length === 6 || users.length === 10) {
-    //yellow
-    userColor = "#FFFF00";
-  } else if (users.length === 3 || users.length === 7 || users.length === 11) {
-    //red
-    userColor = "#FF0000";
-  }
-  const user = { id, username, playRoom, userColor };
-  users.push(user);
-  usersArray.push(user);
-  console.log(users);
-  console.log(usersArray);
-  console.log(Array.from(io.sockets.adapter.rooms));
-  return user;
-}
-
-//Användare lämnar chat
-
-function userLeave(id) {
-  const index = usersArray.findIndex((user) => user.id === id);
-
-  if (index !== -1) {
-    return usersArray.splice(index, 1)[0];
-  }
-}
-
-//get room users
-function getRoomUsers(playRoom) {
-  return usersArray.filter((user) => user.playRoom === playRoom);
-}
-
-function getRoomAllUsers(playRoom) {
-  console.log(users);
-  return users.filter((user) => user.playRoom === playRoom);
-}
 
 io.on("connection", function (socket) {
   console.log("user connected");
@@ -108,9 +57,9 @@ io.on("connection", function (socket) {
   socket.emit("message", "Välkommen!", botName);
 
   socket.on("joinRoom", ({ username, room }) => {
-    console.log("Vill också se" + socket.id);
-
-    const user = userJoin(socket.id, username, room);
+    const user = userJoin(users, socket.id, username, room);
+    users.push(user);
+    usersArray.push(user);
     username = username;
     // Skickar att username har joinat rummet
     socket.broadcast.emit("message", username + " har joinat rummet!", botName);
@@ -139,17 +88,17 @@ io.on("connection", function (socket) {
 
     //Skicka användare och rum från originallista
     io.to(user.playRoom).emit("usersFromStart", {
-      allUsersFromStart: getRoomAllUsers(user.playRoom),
+      allUsersFromStart: getRoomAllUsers(users, user.playRoom),
     });
 
     //Skicka användare och rum
     io.to(user.playRoom).emit("roomUsers", {
       room: user.playRoom,
-      allUsersInRoom: getRoomUsers(user.playRoom),
+      allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
     });
 
     //Spelplanen men spelarens drag
-    socket.on("draw", function(draw){
+    socket.on("draw", function (draw) {
       io.emit("draw", draw);
     });
   });
@@ -159,12 +108,12 @@ io.on("connection", function (socket) {
     // Bot Janne skickar meddelande om att username har lämnat
     socket.broadcast.emit("message", username + " lämnade chatten!", botName);
     console.log(socket.id + "User disconnected");
-    const user = userLeave(socket.id);
+    const user = userLeave(usersArray, socket.id);
     if (user) {
       // Skicka uppdaterad rum-info
       io.to(user.playRoom).emit("roomUsers", {
         room: user.playRoom,
-        allUsersInRoom: getRoomUsers(user.playRoom),
+        allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
       });
     }
   });

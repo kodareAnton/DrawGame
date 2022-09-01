@@ -4,7 +4,12 @@ import {
   drawGrid,
   fillSquare,
 } from "./modules/canvas.mjs";
-
+import {
+  leaveGame,
+  outputUsers,
+  startGameOnUser,
+  startGame,
+} from "./modules/login.js";
 let socket = io();
 
 socket.on("connect", () => {
@@ -22,6 +27,7 @@ headingUserList.classList = "headingUserList";
 headingUserList.innerText = "Användare inloggade:";
 
 let userList = document.createElement("ul");
+userList.id = "userList";
 
 let logOutBtn = document.createElement("button");
 logOutBtn.innerText = "Lämna spel";
@@ -45,57 +51,44 @@ containerForm.classList = "containerForm";
 let inputUser = document.createElement("input");
 inputUser.type = "text";
 inputUser.name = "username";
-inputUser.id = "username";
+inputUser.id = "inputUser";
 inputUser.placeholder = "Användarnamn";
 inputUser.required = true;
 
 let buttonGoToRoom = document.createElement("button");
 buttonGoToRoom.innerText = "Starta spel";
 
-let playroomListContainer = document.createElement("formcontainer");
+//spelrumselement
 
 let waitBanner = document.getElementById("waitBanner");
 waitBanner.innerText = "Vi väntar på fler spelare!";
+
 //Appends
 root.append(main);
 header.append(containerUserList, logOutBtn);
 main.append(containerWelcome, containerForm);
 containerWelcome.append(heading, loginMessage);
-containerForm.append(inputUser, playroomListContainer, buttonGoToRoom);
+containerForm.append(inputUser, buttonGoToRoom);
 containerUserList.append(headingUserList, userList);
 
-//Addera till rullista
-
+//Lista med alla användare i rummet
 let userArray = [];
-let nickname = "";
 
+//Användarnamn
+var nickname = "";
 let username;
-buttonGoToRoom.addEventListener("click", startGame);
-logOutBtn.addEventListener("click", leaveGame);
 
-function startGame() {
+//startknapp som skickar användare och rum
+buttonGoToRoom.addEventListener("click", function () {
   let room = "Room";
   username = inputUser.value;
   nickname = username;
-  if (username.length === 0) {
-    return (inputUser.placeholder = "Måste vara ifyllt");
-  }
-  root.style.display = "none";
-  document.getElementById("containerPage").style.display = "flex";
-  // document.getElementById("myCanvas").style.display = "block";
-  // document.getElementById("chatt").style.display = "block";
-  document.getElementById("header").style.display = "flex";
-
-  saveBtn.append(saveBtnText);
-
+  startGame(username);
   socket.emit("joinRoom", { username, room });
-}
+});
+logOutBtn.addEventListener("click", leaveGame);
 
-function leaveGame() {
-  window.location = "http://localhost:3000/index.html";
-}
-
-//Få alla användare från början
+//Få alla användare från början av sessionen
 socket.on("usersFromStart", ({ allUsersFromStart }) => {
   startGameOnUser(allUsersFromStart);
 });
@@ -103,46 +96,10 @@ socket.on("usersFromStart", ({ allUsersFromStart }) => {
 //Få alla rum och användare uppdaterad lista
 socket.on("roomUsers", ({ room, allUsersInRoom }) => {
   outputUsers(allUsersInRoom);
-  for(let i = 0; i < allUsersInRoom.length; i++){
+  for (let i = 0; i < allUsersInRoom.length; i++) {
     userArray.push(allUsersInRoom[i]);
   }
-  console.log(userArray[0]);
 });
-
-function startGameOnUser(users) {
-  if (users.length === 4) {
-    waitBanner.innerText = "";
-    var counter = 5;
-    setInterval(function () {
-      counter--;
-
-      if (counter > 0) {
-        waitBanner.innerHTML = counter;
-      }
-
-      if (counter === 0) {
-        waitBanner.innerText = "NU börjar spelet!";
-        setTimeout(function () {
-          document.getElementById("myCanvas").style.display = "block";
-          document.getElementById("btnContainer").append(saveBtn);
-          document.getElementById("waitBanner").style.display = "none";
-          clearInterval(counter);
-        }, 2000);
-      }
-    }, 1000);
-  }
-}
-
-function outputUsers(users) {
-  // console.log(users);
-  userList.innerHTML = "";
-  users.forEach((user) => {
-    let userInRoom = document.createElement("li");
-    userInRoom.innerText = user.username;
-    userInRoom.classList = "userInRoom";
-    userList.append(userInRoom);
-  });
-}
 
 // //CANVAS
 var canvas = document.getElementById("myCanvas");
@@ -153,7 +110,7 @@ drawGrid(context);
 canvas.addEventListener(
   "click",
   function (evt) {
-    let thisUser = userArray.find( x=> x.id === socket.id);
+    let thisUser = userArray.find((x) => x.id === socket.id);
     console.log(thisUser.userColor);
     //Hämtar positionen för klickad ruta
     var mousePos = getSquare(canvas, evt);
@@ -168,22 +125,25 @@ canvas.addEventListener(
     var canvasURL = canvas.toDataURL();
     socket.emit("draw", canvasURL);
   },
-  false);
-  //Tar emot och ritar upp spelplanen med spelarens drag
-  socket.on("draw", function(draw){
-    var img = new Image();
-    img.onload=start;
-    img.src = draw;
-    function start(){
-      context.drawImage(img, 0,0)
-    }})
+  false
+);
+//Tar emot och ritar upp spelplanen med spelarens drag
+socket.on("draw", function (draw) {
+  var img = new Image();
+  img.onload = start;
+  img.src = draw;
+  function start() {
+    context.drawImage(img, 0, 0);
+  }
+});
 
-
-
-    /* Sparar bilden */
+/* Sparar bilden */
 let saveBtn = document.createElement("button");
 saveBtn.className = "saveBtn";
+saveBtn.id = "saveBtn";
 let saveBtnText = "Spara bilden";
+document.getElementById("btnContainer").append(saveBtn);
+saveBtn.append(saveBtnText);
 
 // saveBtn.append(saveBtnText)
 // document.body.append(saveBtn);
@@ -258,7 +218,7 @@ roomandChatContainer.classList.add("roomAndChatContainer");
 
 let roomBox = document.createElement("div");
 roomBox.classList.add("roomBox");
-
+saveBtn;
 // let welcomeHeader = document.createElement("h1");
 // welcomeHeader.innerText = nickname;
 // welcomeHeader.classList.add("welcomeHeader");
