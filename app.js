@@ -4,6 +4,8 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
+const PNG = require("pngjs").PNG;
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var imagesRouter = require("./routes/images");
@@ -21,6 +23,7 @@ app.use(cors());
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
+const pixelmatch = require("pixelmatch");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -116,10 +119,8 @@ io.on("connection", function (socket) {
       console.log(Array.from(io.sockets.adapter.rooms));
       let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
 
-      arrayFromSocketRoom = arrayFromSocket.filter((el) => el.includes("Room"));
-      arrayFromSocketRoom1 = arrayFromSocket.filter((el) =>
-        el.includes("Room1")
-      );
+      arrayFromSocketRoom = arrayFromSocket.filter(el => el.includes("Room"));
+      // arrayFromSocketRoom1 = arrayFromSocket.filter(el => el.includes("Room1"));
       // );
       // let arrayFromSocketRoom2 = arrayFromSocket.filter((el) =>
       //   el.includes("Room2")
@@ -131,7 +132,7 @@ io.on("connection", function (socket) {
       //   el.includes("Room4")
       // );
 
-      arrayFromSocketRoom[0][1].forEach((socketInRoom) => {
+      arrayFromSocketRoom[0][1].forEach(socketInRoom => {
         if (arrayOfFinished.length > 4) {
           arrayOfFinished = [];
         }
@@ -140,16 +141,16 @@ io.on("connection", function (socket) {
           arrayOfFinished.push(socketInRoom);
         }
       });
-      arrayFromSocketRoom1[0][1].forEach((socketInRoom) => {
-        if (arrayOfFinished.length > 4) {
-          arrayOfFinished = [];
-        }
+      // arrayFromSocketRoom1[0][1].forEach(socketInRoom => {
+      //   if (arrayOfFinished.length > 4) {
+      //     arrayOfFinished = [];
+      //   }
 
-        if (socketInRoom === socketID) {
-          console.log("Är jag här");
-          arrayOfFinished1.push(socketInRoom);
-        }
-      });
+      //   if (socketInRoom === socketID) {
+      //     console.log("Är jag här");
+      //     arrayOfFinished1.push(socketInRoom);
+      //   }
+      // });
 
       // console.log(arrayFromSocketRoom1);
       // console.log(arrayFromSocketRoom2);
@@ -157,7 +158,11 @@ io.on("connection", function (socket) {
       // console.log(arrayFromSocketRoom4);
       // console.log(arrayFromSocketRoom5);
       io.to("Room").emit("finishedUser", arrayOfFinished);
-      io.to("Room1").emit("finishedUser", arrayOfFinished1);
+      // io.to("Room1").emit("finishedUser", arrayOfFinished1);
+    });
+    socket.on("finishedImages", function (image, facitImg) {
+      console.log(image);
+      console.log(facitImg);
     });
   });
 
