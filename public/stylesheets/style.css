@@ -232,6 +232,10 @@ button {
   width: 100%;
 }
 
+#saveBtn {
+  display: none;
+}
+
 .sendBtn {
   margin: 0;
 }

@@ -4,7 +4,11 @@ import {
   drawGrid,
   fillSquare,
 } from "./modules/canvas.mjs";
-import { allChatElements, sendBtnFunction, userColorStyle } from "./modules/chat.mjs";
+import {
+  allChatElements,
+  sendBtnFunction,
+  userColorStyle,
+} from "./modules/chat.mjs";
 import {
   leaveGame,
   outputUsers,
@@ -12,7 +16,7 @@ import {
   startGame,
 } from "./modules/login.js";
 
-
+import { finishedPlaying } from "./modules/compareImg.mjs";
 let socket = io();
 
 socket.on("connect", () => {
@@ -144,13 +148,16 @@ socket.on("draw", function (draw) {
 let saveBtn = document.createElement("button");
 saveBtn.className = "saveBtn";
 saveBtn.id = "saveBtn";
+
+let finishedBtn = document.createElement("button");
+finishedBtn.className = "finishedBtn";
+finishedBtn.innerText = "Målat klart";
+
 let saveBtnText = "Spara bilden";
-document.getElementById("btnContainer").append(saveBtn);
+document.getElementById("btnContainer").append(saveBtn, finishedBtn);
 saveBtn.append(saveBtnText);
 
-// saveBtn.append(saveBtnText)
-// document.body.append(saveBtn);
-
+//Spara bild
 saveBtn.addEventListener("click", async (e) => {
   // Konverterar bilden till en sträng
   const link = document.createElement("a");
@@ -158,9 +165,11 @@ saveBtn.addEventListener("click", async (e) => {
   link.href = canvas.toDataURL();
   // link.click();
   // link.delete;
+
+  //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
   console.log(imgToSave);
-
+  console.log(canvas.toDataURL);
   let response = await fetch("http://localhost:3000/images", {
     method: "POST",
     headers: {
@@ -172,6 +181,16 @@ saveBtn.addEventListener("click", async (e) => {
   console.log(response);
 });
 
+finishedBtn.addEventListener("click", () => {
+  finishedBtn.disabled = true;
+  socket.emit("finishedUser", socket.id);
+  socket.on("finishedUser", (finishedArray) => {
+    if (finishedArray.length === 4) {
+      console.log("YES");
+    }
+  });
+});
+
 /* Galleriet */
 
 let galleryBtn = document.createElement("button");
@@ -180,6 +199,7 @@ let galleryBtnText = "Visa galleri";
 let imageContainer = document.createElement("div");
 imageContainer.classList.add("imageContainer");
 
+//TODO ändra till HEROKU adress sedan.
 galleryBtn.addEventListener("click", async () => {
   try {
     let response = await fetch("http://localhost:3000/images");
@@ -196,6 +216,7 @@ galleryBtn.append(galleryBtnText);
 root.append(galleryBtn, imageContainer);
 
 function renderImages(data) {
+  console.log(data);
   if (imageContainer.innerHTML !== "") {
     imageContainer.innerHTML = "";
   } else {
@@ -207,14 +228,8 @@ function renderImages(data) {
     }
   }
 }
-// const renderChat = () => {
-// socket.connect();
-
-// document.body.innerHTML = "";
 
 // room
-let userName = "";
-let joinedRoom = "";
 
 let roomandChatContainer = document.createElement("div");
 roomandChatContainer.classList.add("roomAndChatContainer");
@@ -222,7 +237,6 @@ roomandChatContainer.classList.add("roomAndChatContainer");
 let roomBox = document.createElement("div");
 roomBox.classList.add("roomBox");
 saveBtn;
-
 
 //chatt
 let chatContainer = allChatElements(roomBox, roomandChatContainer);
@@ -241,7 +255,6 @@ let sendBtnText = document.createElement("h3");
 sendBtnText.innerHTML = "skicka";
 
 sendBtn.addEventListener("click", () => {
-  
   let message = sendBtnFunction();
   socket.emit("message", message, nickname);
 });
@@ -253,9 +266,14 @@ document.body.append(roomandChatContainer);
 chatContainer.append(chatInputBox);
 // skickar meddelande till surven
 socket.on("message", (message, sender, senderId, userColor) => {
-
   let chatBox1 = document.getElementsByClassName("chatBox")[0];
-  let chatMessage = userColorStyle(senderId, socket.id, userColor, sender, message);
+  let chatMessage = userColorStyle(
+    senderId,
+    socket.id,
+    userColor,
+    sender,
+    message
+  );
 
   chatBox1.append(chatMessage);
   chatBox1.scrollTo(0, chatBox1.scrollHeight);

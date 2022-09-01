@@ -32,6 +32,7 @@ app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
 
 /* Startar igång servern och ansluter till mongoose */
+//TODO ändra till HEROKU adress sedan?
 async function init() {
   try {
     await mongoose.connect("mongodb://localhost:27017/drawgamegallery");
@@ -47,6 +48,12 @@ init();
 let users = [];
 //Array med aktuella användare
 let usersArray = [];
+
+let arrayFromSocketRoom = [];
+let arrayFromSocketRoom1 = [];
+
+let arrayOfFinished = [];
+let arrayOfFinished1 = [];
 
 io.on("connection", function (socket) {
   console.log("user connected");
@@ -100,6 +107,57 @@ io.on("connection", function (socket) {
     //Spelplanen men spelarens drag
     socket.on("draw", function (draw) {
       io.emit("draw", draw);
+    });
+
+    // let arrayFromSocketRoom1=[]
+
+    //Spelare klar med sin bild
+    socket.on("finishedUser", function (socketID) {
+      console.log(Array.from(io.sockets.adapter.rooms));
+      let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
+
+      arrayFromSocketRoom = arrayFromSocket.filter((el) => el.includes("Room"));
+      arrayFromSocketRoom1 = arrayFromSocket.filter((el) =>
+        el.includes("Room1")
+      );
+      // );
+      // let arrayFromSocketRoom2 = arrayFromSocket.filter((el) =>
+      //   el.includes("Room2")
+      // );
+      // let arrayFromSocketRoom3 = arrayFromSocket.filter((el) =>
+      //   el.includes("Room3")
+      // );
+      // let arrayFromSocketRoom4 = arrayFromSocket.filter((el) =>
+      //   el.includes("Room4")
+      // );
+
+      arrayFromSocketRoom[0][1].forEach((socketInRoom) => {
+        if (arrayOfFinished.length > 4) {
+          arrayOfFinished = [];
+        }
+
+        if (socketInRoom === socketID) {
+          arrayOfFinished.push(socketInRoom);
+        }
+      });
+      arrayFromSocketRoom1[0][1].forEach((socketInRoom) => {
+        if (arrayOfFinished.length > 4) {
+          arrayOfFinished = [];
+        }
+
+        if (socketInRoom === socketID) {
+          console.log("Är jag här");
+          arrayOfFinished1.push(socketInRoom);
+        }
+      });
+
+      // console.log(arrayFromSocketRoom1);
+      // console.log(arrayFromSocketRoom2);
+      // console.log(arrayFromSocketRoom3);
+      // console.log(arrayFromSocketRoom4);
+      // console.log(arrayFromSocketRoom5);
+      io.to("Room").emit("finishedUser", arrayOfFinished);
+      io.to("Room1").emit("finishedUser", arrayOfFinished1);
     });
   });
 
