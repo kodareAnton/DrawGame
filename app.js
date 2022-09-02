@@ -21,7 +21,7 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server);
 // const fs = require('fs');
 // const PNG = require('pngjs').PNG;
-// const pixelmatch = require("pixelmatch");
+var pixelmatch = require("pixelmatch");
 // module.exports = pixelmatch;
 app.use(logger("dev"));
 app.use(express.json());
