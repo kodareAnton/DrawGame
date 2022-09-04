@@ -52,10 +52,8 @@ let users = [];
 let usersArray = [];
 
 let arrayFromSocketRoom = [];
-let arrayFromSocketRoom1 = [];
 
 let arrayOfFinished = [];
-let arrayOfFinished1 = [];
 
 //Skapar random siffror som bestämmer vilken facitbild som ska visas
 function randomNumber() {
@@ -70,8 +68,6 @@ let randomNumber3;
 
 io.on("connection", function (socket) {
   console.log("user connected");
-  randomNumber3 = randomNumber();
-  console.log(randomNumber3);
 
   // Botten välkommnar
   const botName = "Bot Janne ";
@@ -79,10 +75,12 @@ io.on("connection", function (socket) {
   socket.emit("message", "Välkommen!", botName);
 
   socket.on("joinRoom", ({ username, room }) => {
-    const user = userJoin(users, socket.id, username, room);
+    const user = userJoin(usersArray, socket.id, username, room);
     users.push(user);
     usersArray.push(user);
     username = username;
+    randomNumber3 = randomNumber();
+    console.log(randomNumber3);
     // Skickar att username har joinat rummet
     socket.broadcast.emit("message", username + " har joinat rummet!", botName);
     console.log(
@@ -124,53 +122,50 @@ io.on("connection", function (socket) {
       io.emit("draw", draw);
     });
 
-    // let arrayFromSocketRoom1=[]
-
     //Spelare klar med sin bild
     socket.on("finishedUser", function (socketID) {
       console.log(Array.from(io.sockets.adapter.rooms));
       let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
-
-      arrayFromSocketRoom = arrayFromSocket.filter((el) => el.includes("Room"));
-      // arrayFromSocketRoom1 = arrayFromSocket.filter(el => el.includes("Room1"));
-      // );
-      // let arrayFromSocketRoom2 = arrayFromSocket.filter((el) =>
-      //   el.includes("Room2")
-      // );
-      // let arrayFromSocketRoom3 = arrayFromSocket.filter((el) =>
-      //   el.includes("Room3")
-      // );
-      // let arrayFromSocketRoom4 = arrayFromSocket.filter((el) =>
-      //   el.includes("Room4")
-      // );
+      console.log("RUMMET" + user.playRoom);
+      console.log(arrayOfFinished.length);
+      console.log(
+        users.filter((user1) => user1.playRoom.includes(user.playRoom))
+      );
+      //.filter((user1) => user1.includes(user.playRoom))
+      arrayFromSocketRoom = arrayFromSocket.filter((el) =>
+        el.includes(user.playRoom)
+      );
 
       arrayFromSocketRoom[0][1].forEach((socketInRoom) => {
-        if (arrayOfFinished.length > 4) {
-          arrayOfFinished = [];
-        }
-
         if (socketInRoom === socketID) {
+          console.log(arrayOfFinished);
           arrayOfFinished.push(socketInRoom);
+          console.log(arrayOfFinished);
         }
       });
-      // arrayFromSocketRoom1[0][1].forEach(socketInRoom => {
-      //   if (arrayOfFinished.length > 4) {
-      //     arrayOfFinished = [];
-      //   }
-
-      //   if (socketInRoom === socketID) {
-      //     console.log("Är jag här");
-      //     arrayOfFinished1.push(socketInRoom);
-      //   }
-      // });
-
-      // console.log(arrayFromSocketRoom1);
-      // console.log(arrayFromSocketRoom2);
-      // console.log(arrayFromSocketRoom3);
-      // console.log(arrayFromSocketRoom4);
-      // console.log(arrayFromSocketRoom5);
-      io.to("Room").emit("finishedUser", arrayOfFinished);
-      // io.to("Room1").emit("finishedUser", arrayOfFinished1);
+      console.log("HÄR");
+      console.log(typeof arrayOfFinished.length);
+      console.log(
+        typeof usersArray.filter((user1) =>
+          user1.playRoom.includes(user.playRoom)
+        ).length
+      );
+      console.log(
+        arrayOfFinished.length ===
+          usersArray.filter((user1) => user1.playRoom.includes(user.playRoom))
+      );
+      if (
+        arrayOfFinished.length ===
+        usersArray.filter((user1) => user1.playRoom.includes(user.playRoom))
+          .length
+      ) {
+        let booleanFinished = true;
+        io.to(user.playRoom).emit("finishedUser", booleanFinished);
+        arrayOfFinished = [];
+      } else {
+        let booleanFinished = false;
+        io.to(user.playRoom).emit("finishedUser", booleanFinished);
+      }
     });
     socket.on("finishedImages", function (image, facitImg) {
       console.log(image);

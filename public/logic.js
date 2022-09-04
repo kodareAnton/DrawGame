@@ -185,12 +185,13 @@ buttonGoToRoom.addEventListener("click", function () {
 logOutBtn.addEventListener("click", leaveGame);
 
 //Få alla användare från början av sessionen
-socket.on("usersFromStart", ({ allUsersFromStart }) => {
-  console.log(allUsersFromStart);
+socket.on("usersFromStart", (allUsersFromStart) => {
+  // console.log(booleanFinished);
 
   //If sats för att få random bilder som facitbilder att efterskapa
   let image;
-  if (allUsersFromStart.length === 4) {
+  console.log(allUsersFromStart.allUsersFromStart);
+  if (allUsersFromStart.allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
     socket.on("getRandomImage", (randomNumberFromSocket) => {
       console.log(randomNumberFromSocket);
@@ -301,8 +302,9 @@ saveBtn.addEventListener("click", async (e) => {
 finishedBtn.addEventListener("click", () => {
   finishedBtn.disabled = true;
   socket.emit("finishedUser", socket.id);
-  socket.on("finishedUser", (finishedArray) => {
-    if (finishedArray.length === 4) {
+  socket.on("finishedUser", (booleanFinished) => {
+    // console.log("FÄRDIGA SPELARE" + finishedArray.length);
+    if (booleanFinished === true) {
       // socket.emit("finishedImages", image);
       document.getElementById("saveBtn").style.display = "block";
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
