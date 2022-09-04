@@ -23,7 +23,7 @@ function userJoin(users, id, username, room) {
     users.length === 20
   ) {
     //blue
-    userColor = "#0000FF";
+    userColor = "#0000ff";
   } else if (
     users.length === 1 ||
     users.length === 5 ||
@@ -43,7 +43,7 @@ function userJoin(users, id, username, room) {
     users.length === 22
   ) {
     //yellow
-    userColor = "#FFFF00";
+    userColor = "#ffff00";
   } else if (
     users.length === 3 ||
     users.length === 7 ||
@@ -53,7 +53,7 @@ function userJoin(users, id, username, room) {
     users.length === 23
   ) {
     //red
-    userColor = "#FF0000";
+    userColor = "#ff0000";
   }
   const user = { id, username, playRoom, userColor };
 
