@@ -1,18 +1,18 @@
 //Användare ansluter till rum och får sin färg
-function userJoin(users, id, username, room) {
-  if (users.length <= 3) {
-    playRoom = room;
-  } else if (users.length > 3 && users.length <= 7) {
-    playRoom = room + "1";
-  } else if (users.length > 7 && users.length <= 11) {
-    playRoom = room + "2";
-  } else if (users.length > 11 && users.length <= 15) {
-    playRoom = room + "3";
-  } else if (users.length > 15 && users.length <= 19) {
-    playRoom = room + "4";
-  } else if (users.length > 19) {
-    playRoom = room + "5";
-  }
+function userJoin(users, id, username, playRoom) {
+  // if (users.length <= 3) {
+  //   playRoom = room;
+  // } else if (users.length > 3 && users.length <= 7) {
+  //   playRoom = room + "1";
+  // } else if (users.length > 7 && users.length <= 11) {
+  //   playRoom = room + "2";
+  // } else if (users.length > 11 && users.length <= 15) {
+  //   playRoom = room + "3";
+  // } else if (users.length > 15 && users.length <= 19) {
+  //   playRoom = room + "4";
+  // } else if (users.length > 19) {
+  //   playRoom = room + "5";
+  // }
 
   if (
     users.length === 0 ||
@@ -55,7 +55,7 @@ function userJoin(users, id, username, room) {
     //red
     userColor = "#FF0000";
   }
-  const user = { id, username, playRoom, userColor };
+  const user = { id, username, playRoom, userColor, playRoom };
 
   return user;
 }

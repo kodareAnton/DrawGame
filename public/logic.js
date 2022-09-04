@@ -23,6 +23,8 @@ import { finishedPlaying } from "./modules/compareImg.mjs";
 // import pixelmatch from "pixelmatch";
 let socket = io();
 
+let usersArrayFromStart = [];
+
 socket.on("connect", () => {
   console.log(socket.id + " A user joined");
 });
@@ -91,9 +93,26 @@ let userArray = [];
 var nickname = "";
 let username;
 
+let imageFacit;
+
+let compareImage1 = new Image();
+let compareImage2 = new Image();
+
+let room;
+
+let counterRoom = 0;
+
+function updateUserlist() {
+  socket.on("userlist", (arrayFromSocketRoom) => {
+    console.log(arrayFromSocketRoom);
+    usersArrayFromStart = arrayFromSocketRoom;
+  });
+}
+updateUserlist();
+
 //startknapp som skickar användare och rum
 buttonGoToRoom.addEventListener("click", function () {
-  let room = "Room";
+  // let room = "Room";
   username = inputUser.value;
   nickname = username;
   startGame(username);
@@ -101,7 +120,7 @@ buttonGoToRoom.addEventListener("click", function () {
     console.log(startGame(username));
     return;
   } else {
-    socket.emit("joinRoom", { username, room });
+    socket.emit("joinRoom", { username });
     //TODO ta bort textfunktion och lägg in under finishedBtn eventlyssnaren
     //Hämta bild som från facit och tagg från canvas på nymålad bild
     //dessa ska sedan jämföras i funktionen nedan.
@@ -213,6 +232,7 @@ socket.on("usersFromStart", (allUsersFromStart) => {
           "data:image/png;base64,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";
       }
       console.log(image);
+      imageFacit = image;
       startGameOnUser(image);
     });
   }
@@ -288,6 +308,7 @@ saveBtn.addEventListener("click", async (e) => {
   let imgToSave = { imageUrl: link.href };
   console.log(imgToSave);
   console.log(canvas.toDataURL);
+  imageSaved = canvas.toDataURL;
   let response = await fetch("http://localhost:3000/images", {
     method: "POST",
     headers: {
@@ -307,66 +328,96 @@ finishedBtn.addEventListener("click", () => {
     if (booleanFinished === true) {
       // socket.emit("finishedImages", image);
       document.getElementById("saveBtn").style.display = "block";
+
+      let imageToPaint = imageFacit;
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
-      //     var image1 = new Image();
-      //     image1.id = "imagePixel1";
-      //     image1.src =
-      //      var facitImg = new Image();
-      //     facitImg.id = "imagePixel2";
-      //     facitImg.src =
-      //     root.append(image1, facitImg);
-      //     console.log(facitImg);
-      //     function convertImageToCanvas(imageID) {
-      //       var image = document.getElementById(imageID);
-      //       var canvas = document.createElement("canvas");
-      //       canvas.width = image.width;
-      //       canvas.height = image.height;
-      //       canvas.getContext("2d").drawImage(image, 0, 0);
-      //       // image.style = "width: 400px";
+      let image1 = new Image();
+      image1.id = "imagePixel1";
+      image1.src = imageToPaint;
+      let facitImg = new Image();
+      facitImg.id = "imagePixel2";
+      facitImg.src = canvas.toDataURL();
+      compareImage1.src = imageToPaint;
+      compareImage2.src = canvas.toDataURL();
 
-      //       return canvas;
-      //     }
+      root.append(image1, facitImg);
 
-      //     async function compareImages() {
-      //       // console.clear();
-      //       var cnvBefore = await convertImageToCanvas("imagePixel1");
-      //       var cnvAfter = await convertImageToCanvas("imagePixel2");
-      //       console.log(cnvBefore);
-      //       var ctxBefore = cnvBefore.getContext("2d");
-      //       var ctxAfter = cnvAfter.getContext("2d");
+      function convertImageToCanvas(imageID) {
+        var image = document.getElementById(imageID);
+        var canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        // image.style = "width: 400px";
 
-      //       let imgDataBefore = ctxBefore.getImageData(
-      //         0,
-      //         0,
-      //         cnvBefore.width,
-      //         cnvBefore.height
-      //       );
-      //       let imgDataAfter = ctxAfter.getImageData(
-      //         0,
-      //         0,
-      //         cnvAfter.width,
-      //         cnvAfter.height
-      //       );
+        return canvas;
+      }
 
-      //       const hght = imgDataBefore.height;
-      //       const wdth = imgDataBefore.width;
+      async function compareImages() {
+        // console.clear();
+        var cnvBefore = await convertImageToCanvas("imagePixel1");
+        var cnvAfter = await convertImageToCanvas("imagePixel2");
+        console.log(cnvBefore);
+        var ctxBefore = cnvBefore.getContext("2d");
+        var ctxAfter = cnvAfter.getContext("2d");
 
-      //       var imgDataOutput = new ImageData(wdth, hght);
+        let imgDataBefore = ctxBefore.getImageData(
+          0,
+          0,
+          cnvBefore.width,
+          cnvBefore.height
+        );
+        let imgDataAfter = ctxAfter.getImageData(
+          0,
+          0,
+          cnvAfter.width,
+          cnvAfter.height
+        );
 
-      //       var numDiffPixels = pixelmatch(
-      //         imgDataBefore.data,
-      //         imgDataAfter.data,
-      //         imgDataOutput.data,
-      //         wdth,
-      //         hght,
-      //         { threshold: 0.1 }
-      //       );
-      //       console.log("numDiffPixels =", numDiffPixels);
-      //     }
-      //     compareImages();
+        const hght = imgDataBefore.height;
+        const wdth = imgDataBefore.width;
+
+        var imgDataOutput = new ImageData(wdth, hght);
+
+        var numDiffPixels = pixelmatch(
+          imgDataBefore.data,
+          imgDataAfter.data,
+          imgDataOutput.data,
+          wdth,
+          hght,
+          { threshold: 0.1 }
+        );
+        console.log("numDiffPixels =", numDiffPixels);
+        competitionComplete(numDiffPixels);
+      }
+      compareImages();
     }
   });
 });
+
+function competitionComplete(numDiffPixels) {
+  let containerScore = document.createElement("div");
+  let containerImages = document.createElement("div");
+  containerImages.classList = "containerImages";
+  let headingScore = document.createElement("h2");
+  headingScore.classList = "headingScore";
+  if (numDiffPixels === 0) {
+    headingScore.innerText = "WOW! 100% rätt!";
+    containerScore.append(headingScore);
+  }
+  if (numDiffPixels > 0 && numDiffPixels < 5000) {
+    headingScore.innerText = "WOW du var nära 100%";
+  }
+  if (numDiffPixels > 80000) {
+    headingScore.innerText =
+      "Hmm.. du behöver nog öva mer! Mindre än 10% rätt!";
+  }
+  document.getElementById("winnerBanner").append(containerScore);
+
+  containerScore.append(headingScore, containerImages);
+  containerImages.append(compareImage1, compareImage2);
+  document.getElementById("winnerBanner").style.display = "block";
+}
 
 /* Galleriet */
 

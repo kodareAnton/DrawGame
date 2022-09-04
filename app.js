@@ -22,6 +22,7 @@ const io = require("socket.io")(server);
 // const fs = require('fs');
 // const PNG = require('pngjs').PNG;
 var pixelmatch = require("pixelmatch");
+const { REPL_MODE_SLOPPY } = require("repl");
 // module.exports = pixelmatch;
 app.use(logger("dev"));
 app.use(express.json());
@@ -66,21 +67,45 @@ function randomNumber() {
 //samma för alla i ett rum används den som skapats av den sista av dem som connectats.
 let randomNumber3;
 
+let counterRoom = 0;
+
+let playRoom = "Room";
+
 io.on("connection", function (socket) {
   console.log("user connected");
 
   // Botten välkommnar
   const botName = "Bot Janne ";
   let username = "";
-  socket.emit("message", "Välkommen!", botName);
 
-  socket.on("joinRoom", ({ username, room }) => {
-    const user = userJoin(usersArray, socket.id, username, room);
+  socket.emit("userlist", arrayFromSocketRoom);
+
+  socket.on("joinRoom", ({ username }) => {
+    let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
+    arrayFromSocketRoom = arrayFromSocket.filter(
+      (room) => !room[1].has(room[0])
+    );
+    // console.log(users.filter((user)=>user.playRoom === ))
+    console.log("UEEEES");
+    console.log(arrayFromSocketRoom);
+    if (arrayFromSocketRoom.length !== 0) {
+      console.log(arrayFromSocketRoom.reverse()[0]);
+      console.log(Array.from(arrayFromSocketRoom.reverse()[0][1]));
+      if (Array.from(arrayFromSocketRoom.reverse()[0][1]).length === 4) {
+        playRoom =
+          arrayFromSocketRoom.reverse()[0][0] + (counterRoom++).toString();
+      }
+    }
+    socket.emit("message", "Välkommen!", botName);
+
+    console.log(playRoom);
+    const user = userJoin(usersArray, socket.id, username, playRoom);
     users.push(user);
     usersArray.push(user);
     username = username;
     randomNumber3 = randomNumber();
-    console.log(randomNumber3);
+    console.log("random number" + randomNumber3);
+
     // Skickar att username har joinat rummet
     socket.broadcast.emit("message", username + " har joinat rummet!", botName);
     console.log(
@@ -126,38 +151,20 @@ io.on("connection", function (socket) {
     socket.on("finishedUser", function (socketID) {
       console.log(Array.from(io.sockets.adapter.rooms));
       let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
-      console.log("RUMMET" + user.playRoom);
-      console.log(arrayOfFinished.length);
-      console.log(
-        users.filter((user1) => user1.playRoom.includes(user.playRoom))
-      );
-      //.filter((user1) => user1.includes(user.playRoom))
+
       arrayFromSocketRoom = arrayFromSocket.filter((el) =>
         el.includes(user.playRoom)
       );
 
       arrayFromSocketRoom[0][1].forEach((socketInRoom) => {
         if (socketInRoom === socketID) {
-          console.log(arrayOfFinished);
           arrayOfFinished.push(socketInRoom);
-          console.log(arrayOfFinished);
         }
       });
-      console.log("HÄR");
-      console.log(typeof arrayOfFinished.length);
-      console.log(
-        typeof usersArray.filter((user1) =>
-          user1.playRoom.includes(user.playRoom)
-        ).length
-      );
-      console.log(
-        arrayOfFinished.length ===
-          usersArray.filter((user1) => user1.playRoom.includes(user.playRoom))
-      );
+
       if (
         arrayOfFinished.length ===
-        usersArray.filter((user1) => user1.playRoom.includes(user.playRoom))
-          .length
+        usersArray.filter((user1) => user1.playRoom === user.playRoom).length
       ) {
         let booleanFinished = true;
         io.to(user.playRoom).emit("finishedUser", booleanFinished);
@@ -199,6 +206,10 @@ io.on("connection", function (socket) {
         room: user.playRoom,
         allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
       });
+    }
+    console.log(Array.from(io.sockets.adapter.rooms));
+    if (Array.from(io.sockets.adapter.rooms).length === 0) {
+      users = [];
     }
   });
 });
