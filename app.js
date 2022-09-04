@@ -57,8 +57,21 @@ let arrayFromSocketRoom1 = [];
 let arrayOfFinished = [];
 let arrayOfFinished1 = [];
 
+//Skapar random siffror som bestämmer vilken facitbild som ska visas
+function randomNumber() {
+  let randomNumberResult = Math.floor(Math.random() * 4);
+  console.log(randomNumberResult);
+  return randomNumberResult;
+}
+
+//Variablen ändras vid varje connection men för att den ska vara
+//samma för alla i ett rum används den som skapats av den sista av dem som connectats.
+let randomNumber3;
+
 io.on("connection", function (socket) {
   console.log("user connected");
+  randomNumber3 = randomNumber();
+  console.log(randomNumber3);
 
   // Botten välkommnar
   const botName = "Bot Janne ";
@@ -162,6 +175,20 @@ io.on("connection", function (socket) {
     socket.on("finishedImages", function (image, facitImg) {
       console.log(image);
       console.log(facitImg);
+    });
+
+    socket.on("getRandomImage", function () {
+      console.log(Array.from(io.sockets.adapter.rooms));
+
+      let arrayInRoom = Array.from(io.sockets.adapter.rooms);
+      const filteredRooms = arrayInRoom.filter((room) => !room[1].has(room[0]));
+      console.log(Array.from(filteredRooms[0][1]).length);
+      if (Array.from(filteredRooms[0][1]).length === 4) {
+        let randomNumberFromSocket = randomNumber3;
+
+        console.log(randomNumberFromSocket);
+        socket.to(user.playRoom).emit("getRandomImage", randomNumberFromSocket);
+      }
     });
   });
 
