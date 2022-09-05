@@ -3,18 +3,24 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var imagesRouter = require("./routes/images");
 var cors = require("cors");
-// const http = require("http").createServer(app);
+const {
+  userJoin,
+  userLeave,
+  getRoomUsers,
+  getRoomAllUsers,
+} = require("./public/modules/user");
 
 var app = express();
 app.use(cors());
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+
+const { REPL_MODE_SLOPPY } = require("repl");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -27,9 +33,10 @@ app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
 
 /* Startar igång servern och ansluter till mongoose */
+//TODO ändra till HEROKU adress sedan?
 async function init() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/drawgamegallery");
+    await mongoose.connect("mongodb+srv://Grupp7:Z69tj9Pefto9DH3Z@drawgame.zmgezh5.mongodb.net/?retryWrites=true&w=majority");
     console.log("connected to database");
   } catch (error) {
     console.log("error" + error);
@@ -38,66 +45,31 @@ async function init() {
 }
 
 init();
-
+//Array med alla användare från start session
 let users = [];
+//Array med aktuella användare
 let usersArray = [];
 
-let userColor;
-let playRoom;
+let arrayFromSocketRoom = [];
 
-//Användare ansluter
-function userJoin(id, username, room) {
-  console.log("HÄR ÄR VI" + users);
+let arrayOfFinished = [];
 
-  if (users.length <= 3) {
-    playRoom = room;
-  } else if (users.length > 3 && users.length <= 7) {
-    playRoom = room + "1";
-  } else if (users.length >= 7) {
-    playRoom = room + "2";
-  }
-
-  if (users.length === 0 || users.length === 4 || users.length === 8) {
-    //blue
-    userColor = "#0000FF";
-  } else if (users.length === 1 || users.length === 5 || users.length === 9) {
-    //green
-    userColor = "#008000";
-  } else if (users.length === 2 || users.length === 6 || users.length === 10) {
-    //yellow
-    userColor = "#FFFF00";
-  } else if (users.length === 3 || users.length === 7 || users.length === 11) {
-    //red
-    userColor = "#FF0000";
-  }
-  const user = { id, username, playRoom, userColor };
-  users.push(user);
-  usersArray.push(user);
-  console.log(users);
-  console.log(usersArray);
-  console.log(Array.from(io.sockets.adapter.rooms));
-  return user;
+//Skapar random siffror som bestämmer vilken facitbild som ska visas
+function randomNumber() {
+  let randomNumberResult = Math.floor(Math.random() * 4);
+  console.log(randomNumberResult);
+  return randomNumberResult;
 }
 
-//Användare lämnar chat
+//Variablen ändras vid varje connection men för att den ska vara
+//samma för alla i ett rum används den som skapats av den sista av dem som connectats.
+let randomNumber3;
 
-function userLeave(id) {
-  const index = usersArray.findIndex((user) => user.id === id);
+let counterRoom = 1;
 
-  if (index !== -1) {
-    return usersArray.splice(index, 1)[0];
-  }
-}
+let playRoom = "Room";
 
-//get room users
-function getRoomUsers(playRoom) {
-  return usersArray.filter((user) => user.playRoom === playRoom);
-}
-
-function getRoomAllUsers(playRoom) {
-  console.log(users);
-  return users.filter((user) => user.playRoom === playRoom);
-}
+let numberForColor;
 
 io.on("connection", function (socket) {
   console.log("user connected");
@@ -105,13 +77,68 @@ io.on("connection", function (socket) {
   // Botten välkommnar
   const botName = "Bot Janne ";
   let username = "";
-  socket.emit("message", "Välkommen!", botName);
 
-  socket.on("joinRoom", ({ username, room }) => {
-    console.log("Vill också se" + socket.id);
+  socket.emit("userlist", arrayFromSocketRoom);
 
-    const user = userJoin(socket.id, username, room);
+  socket.on("joinRoom", ({ username }) => {
+    let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
+    arrayFromSocketRoom = arrayFromSocket.filter(
+      (room) => !room[1].has(room[0])
+    );
+    //Logik för att skapa dynamiska rum
+    if (arrayFromSocketRoom.length !== 0) {
+      let reversedArray = arrayFromSocketRoom.reverse()[0];
+
+      let arrayRoomsReversed = reversedArray[1];
+
+      let actualRoom = Array.from(reversedArray[0]).join("");
+
+      let booleanArray = users.filter(
+        (user) => user.playRoom === actualRoom
+      ).length;
+
+      userBoolean = booleanArray === 4;
+
+      let arrayRoomReversedLength = arrayRoomsReversed.length === 4;
+
+      if (arrayRoomReversedLength === 4 || userBoolean === true) {
+        playRoom =
+          arrayFromSocketRoom.reverse()[0][0] + (counterRoom++).toString();
+      }
+    }
+    socket.emit("message", "Välkommen!", botName);
+
+    let listForColor = usersArray.filter(
+      (user1) => user1.playRoom === playRoom
+    ).length;
+
+    console.log(
+      usersArray.filter((user1) => user1.playRoom === playRoom).length
+    );
+    console.log(listForColor);
+    if (listForColor === 0) {
+      numberForColor = 0;
+    } else if (listForColor === 1) {
+      numberForColor = 1;
+    } else if (listForColor === 2) {
+      numberForColor = 2;
+    } else if (listForColor === 3) {
+      numberForColor = 3;
+    }
+    console.log(numberForColor);
+    const user = userJoin(
+      usersArray,
+      socket.id,
+      username,
+      playRoom,
+      numberForColor
+    );
+    users.push(user);
+    usersArray.push(user);
     username = username;
+    randomNumber3 = randomNumber();
+    console.log("random number" + randomNumber3);
+
     // Skickar att username har joinat rummet
     socket.broadcast.emit("message", username + " har joinat rummet!", botName);
     console.log(
@@ -139,18 +166,63 @@ io.on("connection", function (socket) {
 
     //Skicka användare och rum från originallista
     io.to(user.playRoom).emit("usersFromStart", {
-      allUsersFromStart: getRoomAllUsers(user.playRoom),
+      allUsersFromStart: getRoomAllUsers(users, user.playRoom),
     });
 
     //Skicka användare och rum
     io.to(user.playRoom).emit("roomUsers", {
       room: user.playRoom,
-      allUsersInRoom: getRoomUsers(user.playRoom),
+      allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
     });
 
     //Spelplanen men spelarens drag
-    socket.on("draw", function(draw){
+    socket.on("draw", function (draw) {
       io.emit("draw", draw);
+    });
+
+    //Spelare klar med sin bild
+    socket.on("finishedUser", function (socketID) {
+      console.log(Array.from(io.sockets.adapter.rooms));
+      let arrayFromSocket = Array.from(io.sockets.adapter.rooms);
+
+      arrayFromSocketRoom = arrayFromSocket.filter((el) =>
+        el.includes(user.playRoom)
+      );
+
+      arrayFromSocketRoom[0][1].forEach((socketInRoom) => {
+        if (socketInRoom === socketID) {
+          arrayOfFinished.push(socketInRoom);
+        }
+      });
+
+      if (
+        arrayOfFinished.length ===
+        usersArray.filter((user1) => user1.playRoom === user.playRoom).length
+      ) {
+        let booleanFinished = true;
+        io.to(user.playRoom).emit("finishedUser", booleanFinished);
+        arrayOfFinished = [];
+      } else {
+        let booleanFinished = false;
+        io.to(user.playRoom).emit("finishedUser", booleanFinished);
+      }
+    });
+    socket.on("finishedImages", function (image, facitImg) {
+      console.log(image);
+      console.log(facitImg);
+    });
+
+    socket.on("getRandomImage", function () {
+      let arrayFilteredRooms = users.filter(
+        (user1) => user1.playRoom === user.playRoom
+      ).length;
+      console.log(users.filter((user1) => user1.playRoom === user.playRoom));
+      if (arrayFilteredRooms === 4) {
+        let randomNumberFromSocket = randomNumber3;
+
+        console.log(randomNumberFromSocket);
+        socket.to(user.playRoom).emit("getRandomImage", randomNumberFromSocket);
+      }
     });
   });
 
@@ -159,13 +231,17 @@ io.on("connection", function (socket) {
     // Bot Janne skickar meddelande om att username har lämnat
     socket.broadcast.emit("message", username + " lämnade chatten!", botName);
     console.log(socket.id + "User disconnected");
-    const user = userLeave(socket.id);
+    const user = userLeave(usersArray, socket.id);
     if (user) {
       // Skicka uppdaterad rum-info
       io.to(user.playRoom).emit("roomUsers", {
         room: user.playRoom,
-        allUsersInRoom: getRoomUsers(user.playRoom),
+        allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
       });
+    }
+    console.log(Array.from(io.sockets.adapter.rooms));
+    if (Array.from(io.sockets.adapter.rooms).length === 0) {
+      users = [];
     }
   });
 });
