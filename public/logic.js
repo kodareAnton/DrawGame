@@ -323,7 +323,7 @@ saveBtn.addEventListener("click", async (e) => {
   let imgToSave = { imageUrl: link.href };
   console.log(imgToSave);
   console.log(canvas.toDataURL);
-  imageSaved = canvas.toDataURL;
+  //imageSaved = canvas.toDataURL; <--- Den här ställde till det
 
   let response = await fetch(
     //"http://localhost:3000/images" 
