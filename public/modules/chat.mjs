@@ -21,11 +21,11 @@ export function userColorStyle(senderId, socketId, userColor, sender, message){
     
       if (userColor === "#008000") {
         chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
-      } else if (userColor === "#0000FF") {
+      } else if (userColor === "#0000ff") {
         chatMessage.style.backgroundColor = "rgba(44, 126, 173, 0.553";
-      } else if (userColor === "#FFFF00") {
+      } else if (userColor === "#ffff00") {
         chatMessage.style.backgroundColor = "rgba(188, 190, 23, 0.575)";
-      } else if (userColor === "#FF0000") {
+      } else if (userColor === "#ff0000") {
         chatMessage.style.backgroundColor = "rgba(190, 23, 23, 0.575)";
       }
 

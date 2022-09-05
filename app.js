@@ -34,7 +34,7 @@ app.use("/images", imagesRouter);
 /* Startar igång servern och ansluter till mongoose */
 async function init() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/drawgamegallery");
+    await mongoose.connect("mongodb+srv://Grupp7:Z69tj9Pefto9DH3Z@drawgame.zmgezh5.mongodb.net/?retryWrites=true&w=majority");
     console.log("connected to database");
   } catch (error) {
     console.log("error" + error);
