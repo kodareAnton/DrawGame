@@ -5,17 +5,15 @@ function userJoin(users, id, username, playRoom, numberForColor) {
   if (numberForColor === 0) {
     //blue
 
-    userColor = "#0000FF";
+    userColor = "#0000ff";
   } else if (numberForColor === 1) {
-
     //green
     userColor = "#008000";
   } else if (numberForColor === 2) {
     //yellow
 
-    userColor = "#FFFF00";
+    userColor = "#ffff00";
   } else if (numberForColor === 3) {
-
     //red
     userColor = "#ff0000";
   }
