@@ -4,8 +4,8 @@
 //Om lyckat så försvinner login och chat + spelyta visas.
 export function startGame(username) {
   if (username.length === 0) {
-    return (document.getElementById("inputUser").placeholder =
-      "Måste vara ifyllt");
+    document.getElementById("inputUser").placeholder = "Måste vara ifyllt";
+    return "validationFail";
   }
   document.getElementById("root").style.display = "none";
   document.getElementById("containerPage").style.display = "flex";
@@ -30,27 +30,34 @@ export function leaveGame() {
 }
 
 //Nedräkning till spelet startar
-export function startGameOnUser(users) {
+export function startGameOnUser(imageFromSocket) {
   let waitBanner = document.getElementById("waitBanner");
-  if (users.length === 4) {
-    waitBanner.innerText = "";
-    var counter = 5;
-    setInterval(function () {
-      counter--;
+  let image = new Image();
+  image.src = imageFromSocket;
+  // if (users.length === 4) {
+  waitBanner.innerText = "";
+  var counter = 5;
+  setInterval(function () {
+    counter--;
 
-      if (counter > 0) {
-        waitBanner.innerHTML = counter;
-      }
+    if (counter > 0) {
+      waitBanner.innerHTML = counter;
+    }
 
-      if (counter === 0) {
-        waitBanner.innerText = "NU börjar spelet!";
-        setTimeout(function () {
-          document.getElementById("myCanvas").style.display = "block";
-          document.getElementById("btnContainer").style.display = "block";
-          document.getElementById("waitBanner").style.display = "none";
-          clearInterval(counter);
-        }, 2000);
-      }
-    }, 1000);
-  }
+    if (counter === 0) {
+      waitBanner.innerText = "NU börjar spelet!";
+    }
+    if (counter === -2) {
+      waitBanner.innerText = "";
+      waitBanner.append(image);
+      setTimeout(function () {
+        document.getElementById("myCanvas").style.display = "block";
+        document.getElementById("btnContainer").style.display = "block";
+        document.getElementById("waitBanner").style.display = "none";
+
+        clearInterval(counter);
+      }, 5000);
+    }
+  }, 1000);
+  // }
 }

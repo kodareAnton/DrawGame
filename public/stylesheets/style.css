@@ -34,6 +34,14 @@
 .userInRoom {
 }
 
+#imagePixel1 {
+  display: none;
+}
+
+#imagePixel2 {
+  display: none;
+}
+
 #root {
   position: relative;
   left: 0;
@@ -50,6 +58,9 @@
 }
 
 #containerPage {
+  position: relative;
+  left: 0;
+  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -58,6 +69,32 @@
   height: 100vh;
   background-image: url("/images/background.jpg");
   display: none;
+}
+
+#winnerBanner {
+  position: absolute;
+  width: 80%;
+  height: auto;
+  left: 10%;
+  top: 25%;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.688);
+  box-shadow: 0px 0px 13px 13px #ffffff;
+  padding: 20px;
+}
+
+.headingScore {
+  color: white;
+  text-align: center;
+}
+
+.containerImages {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px;
 }
 
 #containerMyCanvasGalleryBtn {
@@ -230,6 +267,10 @@ button {
 .chatInput {
   border: 1px solid rgb(0, 0, 0);
   width: 100%;
+}
+
+#saveBtn {
+  display: none;
 }
 
 .sendBtn {
