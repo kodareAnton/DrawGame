@@ -44,9 +44,7 @@ export function outputUsers(users) {
 
 //TODO Loggar ut till startsidan, ska ändras till heroku-adress.
 export function leaveGame() {
-  window.location = 
-  //"http://localhost:3000/index.html"
-  "https://heroku-drawgame.herokuapp.com/index.html";
+  window.location.reload()
 }
 
 //Nedräkning till spelet startar
