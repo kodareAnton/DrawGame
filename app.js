@@ -41,7 +41,7 @@ async function init() {
   } catch (error) {
     console.log("error" + error);
   }
-  server.listen(process.env.PORT);
+  server.listen(process.env.PORT || 3000);
 }
 
 init();
