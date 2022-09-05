@@ -325,7 +325,9 @@ saveBtn.addEventListener("click", async (e) => {
   console.log(canvas.toDataURL);
   imageSaved = canvas.toDataURL;
 
-  let response = await fetch("http://localhost:3000/images", {
+  let response = await fetch(
+    //"http://localhost:3000/images" 
+    "https://heroku-drawgame.herokuapp.com/images", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -446,7 +448,9 @@ imageContainer.classList.add("imageContainer");
 //TODO ändra till HEROKU adress sedan.
 galleryBtn.addEventListener("click", async () => {
   try {
-    let response = await fetch("http://localhost:3000/images");
+    let response = await fetch(
+    //"http://localhost:3000/images"
+    "https://heroku-drawgame.herokuapp.com/images");
     console.log(response);
     let data = await response.json();
 
