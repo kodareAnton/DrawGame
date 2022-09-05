@@ -4,16 +4,20 @@ function userJoin(users, id, username, playRoom, numberForColor) {
 
   if (numberForColor === 0) {
     //blue
+
     userColor = "#0000FF";
   } else if (numberForColor === 1) {
+
     //green
     userColor = "#008000";
   } else if (numberForColor === 2) {
     //yellow
+
     userColor = "#FFFF00";
   } else if (numberForColor === 3) {
+
     //red
-    userColor = "#FF0000";
+    userColor = "#ff0000";
   }
   const user = { id, username, playRoom, userColor, playRoom };
 

@@ -23,6 +23,8 @@
 
   //Funktion för att rita upp rutnätet på spelytan. Varje ruta är 20px
   export function drawGrid(context) {
+    context.fillStyle = "#ffffff"
+    context.fillRect(0,0,301,301);
       for (var x = 0.5; x < 301; x += 20) {
         context.moveTo(x, 0);
         context.lineTo(x, 300);
@@ -38,14 +40,15 @@
   }
 
   //Funktion för att fylla i rutan med en färg
-  export function fillSquare(context, x, y, color, userColor){
+  export function fillSquare(context, x, y, color, playerColor){
       //Kontrollerar om rutan är i spelarens färg och färgar/avfärgar utifrån detta
-      if (color === userColor){
+      
+      if (color === playerColor){
         context.fillStyle = "#ffffff"
         context.fillRect(x,y,19,19);
       }
-      else if(color === "#000000"|| "#ffffff" ){
-        context.fillStyle = userColor
+      else if(color === "#ffffff" ){
+        context.fillStyle = playerColor
         context.fillRect(x,y,19,19);
       }
       else(
