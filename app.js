@@ -19,11 +19,9 @@ app.use(cors());
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-// const fs = require('fs');
-// const PNG = require('pngjs').PNG;
-var pixelmatch = require("pixelmatch");
+
 const { REPL_MODE_SLOPPY } = require("repl");
-// module.exports = pixelmatch;
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -67,9 +65,11 @@ function randomNumber() {
 //samma för alla i ett rum används den som skapats av den sista av dem som connectats.
 let randomNumber3;
 
-let counterRoom = 0;
+let counterRoom = 1;
 
 let playRoom = "Room";
+
+let numberForColor;
 
 io.on("connection", function (socket) {
   console.log("user connected");
@@ -85,21 +85,54 @@ io.on("connection", function (socket) {
     arrayFromSocketRoom = arrayFromSocket.filter(
       (room) => !room[1].has(room[0])
     );
-    // console.log(users.filter((user)=>user.playRoom === ))
-    console.log("UEEEES");
-    console.log(arrayFromSocketRoom);
+    //Logik för att skapa dynamiska rum
     if (arrayFromSocketRoom.length !== 0) {
-      console.log(arrayFromSocketRoom.reverse()[0]);
-      console.log(Array.from(arrayFromSocketRoom.reverse()[0][1]));
-      if (Array.from(arrayFromSocketRoom.reverse()[0][1]).length === 4) {
+      let reversedArray = arrayFromSocketRoom.reverse()[0];
+
+      let arrayRoomsReversed = reversedArray[1];
+
+      let actualRoom = Array.from(reversedArray[0]).join("");
+
+      let booleanArray = users.filter(
+        (user) => user.playRoom === actualRoom
+      ).length;
+
+      userBoolean = booleanArray === 4;
+
+      let arrayRoomReversedLength = arrayRoomsReversed.length === 4;
+
+      if (arrayRoomReversedLength === 4 || userBoolean === true) {
         playRoom =
           arrayFromSocketRoom.reverse()[0][0] + (counterRoom++).toString();
       }
     }
     socket.emit("message", "Välkommen!", botName);
 
-    console.log(playRoom);
-    const user = userJoin(usersArray, socket.id, username, playRoom);
+    let listForColor = usersArray.filter(
+      (user1) => user1.playRoom === playRoom
+    ).length;
+
+    console.log(
+      usersArray.filter((user1) => user1.playRoom === playRoom).length
+    );
+    console.log(listForColor);
+    if (listForColor === 0) {
+      numberForColor = 0;
+    } else if (listForColor === 1) {
+      numberForColor = 1;
+    } else if (listForColor === 2) {
+      numberForColor = 2;
+    } else if (listForColor === 3) {
+      numberForColor = 3;
+    }
+    console.log(numberForColor);
+    const user = userJoin(
+      usersArray,
+      socket.id,
+      username,
+      playRoom,
+      numberForColor
+    );
     users.push(user);
     usersArray.push(user);
     username = username;
@@ -180,12 +213,11 @@ io.on("connection", function (socket) {
     });
 
     socket.on("getRandomImage", function () {
-      console.log(Array.from(io.sockets.adapter.rooms));
-
-      let arrayInRoom = Array.from(io.sockets.adapter.rooms);
-      const filteredRooms = arrayInRoom.filter((room) => !room[1].has(room[0]));
-      console.log(Array.from(filteredRooms[0][1]).length);
-      if (Array.from(filteredRooms[0][1]).length === 4) {
+      let arrayFilteredRooms = users.filter(
+        (user1) => user1.playRoom === user.playRoom
+      ).length;
+      console.log(users.filter((user1) => user1.playRoom === user.playRoom));
+      if (arrayFilteredRooms === 4) {
         let randomNumberFromSocket = randomNumber3;
 
         console.log(randomNumberFromSocket);
