@@ -94,7 +94,7 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
         waitBanner.append(image);
         setTimeout(function () {
           document.getElementById("myCanvas").style.display = "block";
-          document.getElementById("btnContainer").style.display = "block";
+          document.getElementById("btnContainer").style.display = "flex";
           document.getElementById("containerWaitBanner").style.display = "none";
 
           clearInterval(counter);
@@ -115,7 +115,11 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
             document.getElementById("titelForTime").style.display = "none";
             document.getElementById("counterForGame").style.display = "none";
             resolve("done");
+
             // finishedTimer(socketID);
+          }
+          if (counter2 < 0) {
+            console.log("HEJHEJHEJ");
             clearInterval(counter2);
           }
         }, 1000);
