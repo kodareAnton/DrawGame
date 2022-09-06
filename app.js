@@ -241,7 +241,6 @@ io.on("connection", function (socket) {
         allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
       });
     }
-    console.log("DENNA DDDDDDD");
 
     let emptyRoom = Array.from(io.sockets.adapter.rooms).filter(
       (room) => !room[1].has(room[0])

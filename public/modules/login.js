@@ -119,7 +119,6 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
             // finishedTimer(socketID);
           }
           if (counter2 < 0) {
-            console.log("HEJHEJHEJ");
             clearInterval(counter2);
           }
         }, 1000);
