@@ -175,7 +175,7 @@ button:focus {
   box-shadow: inset 0px 0px 5px #c1c1c1;
 }
 
-button:hover{
+button:hover {
   background-color: rgba(175, 45, 214, 0.836);
 }
 
@@ -242,13 +242,18 @@ img {
 }
 
 button {
-  padding: 1em;
+  padding: 10px;
   border-radius: 5px;
-  margin: 1rem;
+  margin: 10px;
   background-color: rgba(50, 50, 216, 0.678);
   border: none;
   color: white;
   cursor: pointer;
+  font-size: 1.2rem;
+}
+
+button:disabled {
+  background-color: lightgray;
 }
 
 .roomAndChatContainer {
@@ -306,9 +311,9 @@ button {
   width: 100%;
 }
 
-#saveBtn {
+/* #saveBtn {
   display: none;
-}
+} */
 
 .sendBtn {
   margin: 0;
@@ -316,4 +321,11 @@ button {
 
 #chatt {
   display: block;
+}
+
+.containerScore {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
