@@ -95,7 +95,7 @@
   top: 25%;
   display: none;
   background-color: rgba(0, 0, 0, 0.688);
-  box-shadow: 0px 0px 13px 13px #ffffff;
+  box-shadow: 0px 0px 10px 10px #ffffff;
   padding: 20px;
 }
 
@@ -115,7 +115,7 @@
 
 #containerMyCanvasGalleryBtn {
   background-color: rgba(0, 0, 0, 0.575);
-  box-shadow: 0px 0px 13px 13px #ffffff;
+  box-shadow: 0px 0px 10px 10px #ffffff;
   width: 40vw;
   height: 60vh;
   display: flex;
@@ -132,7 +132,7 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
-  box-shadow: 0px 0px 13px 13px #ffffff;
+  box-shadow: 0px 0px 10px 10px #ffffff;
   background-color: rgba(0, 0, 0, 0.538);
 }
 
@@ -151,12 +151,20 @@ p {
 }
 
 button {
-  background-color: rgba(137, 43, 226, 0.658);
   padding: 5px 10px 5px 10px;
-  border-radius: 5px;
-  color: white;
   margin-left: 10px;
 }
+
+button {
+  padding: 1em;
+  border-radius: 5px;
+  margin: 3rem;
+  background-color: rgba(50, 50, 216, 0.678);
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
 
 button:active {
   background: #e5e5e5;
@@ -168,7 +176,7 @@ button:active {
 }
 
 button:focus {
-  background: #e5e5e5;
+  background-color: rgba(50, 50, 216, 0.678);
   outline: none;
   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
   -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
@@ -177,6 +185,10 @@ button:focus {
 
 button:hover{
   background-color: rgba(175, 45, 214, 0.836);
+}
+
+button:disabled{
+  background-color: rgba(255, 0, 0, 0.315);
 }
 
 input {
@@ -241,15 +253,6 @@ img {
   color: white;
 }
 
-button {
-  padding: 1em;
-  border-radius: 5px;
-  margin: 1rem;
-  background-color: rgba(50, 50, 216, 0.678);
-  border: none;
-  color: white;
-  cursor: pointer;
-}
 
 .roomAndChatContainer {
   display: flex;
@@ -279,7 +282,7 @@ button {
   height: 60vh;
   width: 40vw;
   background-color: rgba(3, 3, 3, 0.722);
-  box-shadow: 0px 0px 13px 13px #ffffff;
+  box-shadow: 0px 0px 10px 10px #ffffff;
   border: 1px solid black;
 }
 
