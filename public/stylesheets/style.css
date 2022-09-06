@@ -200,6 +200,28 @@ input {
   display: none;
 }
 
+#waitHeading {
+  font-size: 1.4rem;
+
+  display: none;
+  color: white;
+}
+
+#containerWaitBanner {
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#colorPaint {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 20%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 #waitBanner {
   display: block;
   color: white;
@@ -250,6 +272,12 @@ button {
   color: white;
   cursor: pointer;
   font-size: 1.2rem;
+}
+
+#colorPaint {
+  width: 20px;
+  height: 20px;
+  border-radius: 20%;
 }
 
 button:disabled {

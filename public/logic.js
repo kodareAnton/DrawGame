@@ -221,14 +221,15 @@ buttonGoToRoom.addEventListener("click", function () {
 });
 logOutBtn.addEventListener("click", leaveGame);
 
-//Få alla användare från början av sessionen
-socket.on("usersFromStart", (allUsersFromStart) => {
-  // console.log(booleanFinished);
+let doneList = [];
 
-  //If sats för att få random bilder som facitbilder att efterskapa
+//Få alla användare från början av sessionen
+socket.on("usersFromStart", ({ allUsersFromStart }) => {
+  // console.log(booleanFinished);
   let image;
-  console.log(allUsersFromStart.allUsersFromStart);
-  if (allUsersFromStart.allUsersFromStart.length === 4) {
+  //If sats för att få random bilder som facitbilder att efterskapa
+  console.log(allUsersFromStart);
+  if (allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
     socket.on("getRandomImage", (randomNumberFromSocket) => {
       console.log(randomNumberFromSocket);
@@ -246,7 +247,15 @@ socket.on("usersFromStart", (allUsersFromStart) => {
       }
       console.log(image);
       imageFacit = image;
-      startGameOnUser(image);
+
+      startGameOnUser(image, allUsersFromStart, socket.id).then((done) => {
+        doneList.push(done);
+        console.log(doneList);
+        if (doneList.length > 2) {
+          userFinishedDrawing();
+        }
+      });
+      // let startResult = startGameOnUser(image, allUsersFromStart, socket.id);
     });
   }
 });
@@ -338,15 +347,17 @@ saveBtn.addEventListener("click", async (e) => {
   console.log(response);
 });
 
-finishedBtn.addEventListener("click", () => {
+finishedBtn.addEventListener("click", userFinishedDrawing);
+
+function userFinishedDrawing() {
+  if (finishedBtn.disabled === true) {
+    return;
+  }
   finishedBtn.disabled = true;
   socket.emit("finishedUser", socket.id);
   socket.on("finishedUser", (booleanFinished) => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
     if (booleanFinished === true) {
-      // socket.emit("finishedImages", image);
-      // document.getElementById("saveBtn").style.display = "block";
-
       let imageToPaint = imageFacit;
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
       let image1 = new Image();
@@ -366,7 +377,6 @@ finishedBtn.addEventListener("click", () => {
         canvas.width = image.width;
         canvas.height = image.height;
         canvas.getContext("2d").drawImage(image, 0, 0);
-        // image.style = "width: 400px";
 
         return canvas;
       }
@@ -411,7 +421,7 @@ finishedBtn.addEventListener("click", () => {
       compareImages();
     }
   });
-});
+}
 
 function competitionComplete(numDiffPixels) {
   let containerScore = document.createElement("div");

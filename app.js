@@ -36,7 +36,9 @@ app.use("/images", imagesRouter);
 //TODO ändra till HEROKU adress sedan?
 async function init() {
   try {
-    await mongoose.connect("mongodb+srv://Grupp7:Z69tj9Pefto9DH3Z@drawgame.zmgezh5.mongodb.net/?retryWrites=true&w=majority");
+    await mongoose.connect(
+      "mongodb+srv://Grupp7:Z69tj9Pefto9DH3Z@drawgame.zmgezh5.mongodb.net/?retryWrites=true&w=majority"
+    );
     console.log("connected to database");
   } catch (error) {
     console.log("error" + error);
@@ -239,8 +241,13 @@ io.on("connection", function (socket) {
         allUsersInRoom: getRoomUsers(usersArray, user.playRoom),
       });
     }
-    console.log(Array.from(io.sockets.adapter.rooms));
-    if (Array.from(io.sockets.adapter.rooms).length === 0) {
+    console.log("DENNA DDDDDDD");
+
+    let emptyRoom = Array.from(io.sockets.adapter.rooms).filter(
+      (room) => !room[1].has(room[0])
+    );
+
+    if (emptyRoom.length === 0) {
       users = [];
     }
   });
