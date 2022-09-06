@@ -292,9 +292,10 @@ socket.on("draw", function (draw) {
   img.src = draw;
 
   function start() {
-    console.log(draw);
+    console.log(context.drawImage(img, 0, 0));
     context.drawImage(img, 0, 0);
   }
+  start()
 });
 
 /* Sparar bilden */
@@ -412,25 +413,29 @@ finishedBtn.addEventListener("click", () => {
   });
 });
 
+function percentage(partialValue, totalValue) {
+  return (100 * partialValue) / totalValue;
+} 
+
 function competitionComplete(numDiffPixels) {
   let containerScore = document.createElement("div");
   let containerImages = document.createElement("div");
   containerImages.classList = "containerImages";
   let headingScore = document.createElement("h2");
   headingScore.classList = "headingScore";
+
+  let failScore = Math.floor(percentage(numDiffPixels, 81225));
+  let score = 100 - failScore;
+
   if (numDiffPixels === 0) {
     headingScore.innerText = "WOW! 100% rätt!";
     containerScore.append(headingScore);
   }
-  if (numDiffPixels > 0 && numDiffPixels < 5000) {
-    headingScore.innerText = "WOW du var nära 100%";
+  else {
+    headingScore.innerText = score + "% rätt"
   }
-  if (numDiffPixels > 80000) {
-    headingScore.innerText =
-      "Hmm.. du behöver nog öva mer! Mindre än 10% rätt!";
-  }
-  document.getElementById("winnerBanner").append(containerScore);
 
+  document.getElementById("winnerBanner").append(containerScore);
   containerScore.append(headingScore, containerImages);
   containerImages.append(compareImage1, compareImage2);
   document.getElementById("winnerBanner").style.display = "block";

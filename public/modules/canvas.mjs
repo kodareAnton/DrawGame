@@ -47,7 +47,7 @@
         context.fillStyle = "#ffffff"
         context.fillRect(x,y,19,19);
       }
-      else if(color === "#ffffff" ){
+      else if(color === "#ffffff" || color === "#000000" ){
         context.fillStyle = playerColor
         context.fillRect(x,y,19,19);
       }
