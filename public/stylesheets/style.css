@@ -291,9 +291,10 @@ button:disabled {
 .chatMessage {
   display: flex;
   align-items: center;
+  max-width: 100%;
   padding-left: 1em;
   padding-right: 1em;
-  height: 3em;
+  min-height: 3em;
   border-radius: 5px;
   margin: 1%;
   color: white;

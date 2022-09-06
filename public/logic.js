@@ -317,14 +317,11 @@ saveBtn.addEventListener("click", async (e) => {
   const link = document.createElement("a");
   link.download = "download.png";
   link.href = canvas.toDataURL();
-  // link.click();
-  // link.delete;
 
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
   console.log(imgToSave);
   console.log(canvas.toDataURL);
-  // imageSaved = canvas.toDataURL;
 
   let response = await fetch(
     //"http://localhost:3000/images"
