@@ -119,7 +119,9 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
             // finishedTimer(socketID);
           }
           if (counter2 < 0) {
-            clearInterval(counter2);
+            for (var i = 1; i < 99999; i++) {
+              window.clearInterval(i);
+            }
           }
         }, 1000);
         // });
