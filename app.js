@@ -246,9 +246,13 @@ io.on("connection", function (socket) {
       (room) => !room[1].has(room[0])
     );
 
+    console.log(emptyRoom.length);
+    console.log(users);
     if (emptyRoom.length === 0) {
       users = [];
+      playRoom = "Room";
     }
+    console.log(users);
   });
 });
 
