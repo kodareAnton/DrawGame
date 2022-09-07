@@ -18,20 +18,11 @@ import {
 
 import { finishedMessage } from "./modules/finished.mjs";
 
-import { finishedPlaying } from "./modules/compareImg.mjs";
-// import { PNG } from "pngjs";
-// import pixelmatch from "./../app.js";
-
-// import pixelmatch from "pixelmatch";
 let socket = io();
-
-let usersArrayFromStart = [];
 
 socket.on("connect", () => {
   console.log(socket.id + " A user joined");
 });
-// let pixelmatch = pixelmatch;
-// finishedPlaying(socket.id);
 
 //FACIT EXEMPEL Man får dissa min art ;)
 //Blomma
@@ -119,40 +110,30 @@ let imageFacit;
 let compareImage1 = new Image();
 let compareImage2 = new Image();
 
-let room;
-
-let counterRoom = 0;
-
-function updateUserlist() {
-  socket.on("userlist", (arrayFromSocketRoom) => {
-    console.log(arrayFromSocketRoom);
-    usersArrayFromStart = arrayFromSocketRoom;
-  });
-}
-updateUserlist();
-
 //startknapp som skickar användare och rum
 buttonGoToRoom.addEventListener("click", function () {
   // let room = "Room";
   username = inputUser.value;
   nickname = username;
-  startGame(username);
-  if (startGame(username) === "validationFail") {
-    console.log(startGame(username));
+  let startGameVar = startGame(username);
+  if (startGameVar === "validationFail") {
+    console.log("inget namn");
     return;
   } else {
     socket.emit("joinRoom", { username });
   }
 });
+
+//Lämna spel
 logOutBtn.addEventListener("click", leaveGame);
 
+//Lista för snar på promise, kommer 3 stycken.
 let doneList = [];
-
 //Få alla användare från början av sessionen
 socket.on("usersFromStart", ({ allUsersFromStart }) => {
-  // console.log(booleanFinished);
   let image;
   //If sats för att få random bilder som facitbilder att efterskapa
+  console.log("ALLA ANVÄNDARE FRÅN START I RUMMET");
   console.log(allUsersFromStart);
   if (allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
@@ -170,7 +151,7 @@ socket.on("usersFromStart", ({ allUsersFromStart }) => {
       } else if (randomNumberFromSocket === 4) {
         image = facit5;
       }
-      console.log(image);
+
       imageFacit = image;
 
       startGameOnUser(image, allUsersFromStart, socket.id).then((done) => {
