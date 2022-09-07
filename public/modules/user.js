@@ -17,7 +17,7 @@ function userJoin(users, id, username, playRoom, numberForColor) {
     //red
     userColor = "#ff0000";
   }
-  const user = { id, username, playRoom, userColor, playRoom };
+  const user = { id, username, playRoom, userColor };
 
   return user;
 }
