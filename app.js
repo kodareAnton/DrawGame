@@ -202,6 +202,10 @@ io.on("connection", function (socket) {
       io.to(user.playRoom).emit("draw", draw);
     });
 
+    socket.on("disableSaveBtn", function (disableSaveBtn){
+      io.to(user.playRoom).emit("disableSaveBtn", disableSaveBtn)
+    })
+
     //Spelare klar med sin bild
     socket.on("finishedUser", function (socketID) {
       let arrayFromSocket = Array.from(io.sockets.adapter.rooms);

@@ -233,6 +233,8 @@ saveBtn.addEventListener("click", async (e) => {
   const link = document.createElement("a");
   link.download = "download.png";
   link.href = canvas.toDataURL();
+  let disable = true;
+  socket.emit("disableSaveBtn", disable);
 
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
@@ -252,6 +254,11 @@ saveBtn.addEventListener("click", async (e) => {
   );
 
   console.log(response);
+});
+
+socket.on("disableSaveBtn", function(disableSaveBtn){
+  console.log(disableSaveBtn);
+  document.getElementById("saveBtn").disabled = disableSaveBtn;
 });
 
 finishedBtn.addEventListener("click", userFinishedDrawing);
