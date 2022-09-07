@@ -16,7 +16,12 @@ import {
   startGame,
 } from "./modules/login.js";
 
+
+import { createPixel } from "./modules/animation.mjs";
+
+
 import { finishedMessage } from "./modules/finished.mjs";
+
 
 let socket = io();
 
@@ -64,6 +69,7 @@ logOutBtn.classList = "logOutBtn";
 let root = document.getElementById("root");
 let main = document.createElement("main");
 main.className = "main";
+main.id = "main";
 
 let containerWelcome = document.createElement("div");
 containerWelcome.className = "containerWelcome";
@@ -90,6 +96,10 @@ buttonGoToRoom.innerText = "Starta spel";
 let waitBanner = document.getElementById("waitBanner");
 waitBanner.innerText = "Vi väntar på fler spelare!";
 
+// Pixel regn
+
+setInterval(createPixel, 200);
+
 //Appends
 root.append(main);
 header.append(containerUserList, logOutBtn);
@@ -109,6 +119,7 @@ let imageFacit;
 
 let compareImage1 = new Image();
 let compareImage2 = new Image();
+
 
 //startknapp som skickar användare och rum
 buttonGoToRoom.addEventListener("click", function () {
@@ -130,14 +141,16 @@ logOutBtn.addEventListener("click", leaveGame);
 //Lista för snar på promise, kommer 3 stycken.
 let doneList = [];
 //Få alla användare från början av sessionen
+
 socket.on("usersFromStart", ({ allUsersFromStart }) => {
+
   let image;
   //If sats för att få random bilder som facitbilder att efterskapa
   console.log("ALLA ANVÄNDARE FRÅN START I RUMMET");
   console.log(allUsersFromStart);
   if (allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
-    socket.on("getRandomImage", (randomNumberFromSocket) => {
+    socket.on("getRandomImage", randomNumberFromSocket => {
       console.log(randomNumberFromSocket);
       if (randomNumberFromSocket === 0) {
         image = facit1;
@@ -183,7 +196,7 @@ drawGrid(context);
 canvas.addEventListener(
   "click",
   function (evt) {
-    let thisUser = userArray.find((x) => x.id === socket.id);
+    let thisUser = userArray.find(x => x.id === socket.id);
 
     //Hämtar positionen för klickad ruta
     var mousePos = getSquare(canvas, evt);
@@ -228,13 +241,16 @@ document.getElementById("btnContainer").append(finishedBtn);
 saveBtn.append(saveBtnText);
 
 //Spara bild
-saveBtn.addEventListener("click", async (e) => {
+saveBtn.addEventListener("click", async e => {
   // Konverterar bilden till en sträng
   const link = document.createElement("a");
   link.download = "download.png";
   link.href = canvas.toDataURL();
+
+
   let disable = true;
   socket.emit("disableSaveBtn", disable);
+
 
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
@@ -270,7 +286,7 @@ function userFinishedDrawing() {
   finishedBtn.disabled = true;
   finishedMessage();
   socket.emit("finishedUser", socket.id);
-  socket.on("finishedUser", (booleanFinished) => {
+  socket.on("finishedUser", booleanFinished => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
     if (booleanFinished === true) {
       let imageToPaint = imageFacit;
