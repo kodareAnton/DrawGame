@@ -284,16 +284,16 @@ function userFinishedDrawing() {
     if (booleanFinished === true) {
       let imageToPaint = imageFacit;
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
-      let image1 = new Image();
-      image1.id = "imagePixel1";
-      image1.src = imageToPaint;
       let facitImg = new Image();
-      facitImg.id = "imagePixel2";
-      facitImg.src = canvas.toDataURL();
+      facitImg.id = "imagePixel1";
+      facitImg.src = imageToPaint;
+      // image1 = new Image();
+      // image1.id = "imagePixel2";
+      // image1.src = canvas.toDataURL();
       compareImage1.src = imageToPaint;
       compareImage2.src = canvas.toDataURL();
-
-      root.append(image1, facitImg);
+      //image1
+      root.append(facitImg);
 
       function convertImageToCanvas(imageID) {
         var image = document.getElementById(imageID);
@@ -310,7 +310,7 @@ function userFinishedDrawing() {
       async function compareImages() {
         // console.clear();
         var cnvBefore = await convertImageToCanvas("imagePixel1");
-        var cnvAfter = await convertImageToCanvas("imagePixel2");
+        var cnvAfter = await document.getElementById("myCanvas");
         console.log(cnvBefore);
         var ctxBefore = cnvBefore.getContext("2d");
         var ctxAfter = cnvAfter.getContext("2d");
@@ -333,10 +333,8 @@ function userFinishedDrawing() {
 
         var imgDataOutput = new ImageData(wdth, hght);
         console.log(imgDataAfter.data);
-        console.log(imgDataAfter.data);
+        console.log(imgDataBefore.data);
         console.log(imgDataOutput.data);
-        console.log(wdth);
-        console.log(hght);
 
         var numDiffPixels = pixelmatch(
           imgDataBefore.data,
