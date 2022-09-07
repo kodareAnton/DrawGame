@@ -16,6 +16,8 @@ import {
   startGame,
 } from "./modules/login.js";
 
+import { finishedMessage } from "./modules/finished.mjs";
+
 import { finishedPlaying } from "./modules/compareImg.mjs";
 // import { PNG } from "pngjs";
 // import pixelmatch from "./../app.js";
@@ -354,6 +356,7 @@ function userFinishedDrawing() {
     return;
   }
   finishedBtn.disabled = true;
+  finishedMessage();
   socket.emit("finishedUser", socket.id);
   socket.on("finishedUser", (booleanFinished) => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
