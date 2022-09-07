@@ -398,7 +398,10 @@ function renderImages(data) {
   console.log(data);
   if (imageContainer.innerHTML !== "") {
     imageContainer.innerHTML = "";
+    galleryBtn.innerText = "Visa galleri";
+
   } else {
+    galleryBtn.innerText = "Dölj galleri";
     for (let i = 0; i < data.length; i++) {
       let img = document.createElement("img");
       img.src = data[i].imageUrl;
