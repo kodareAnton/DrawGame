@@ -307,10 +307,10 @@ function userFinishedDrawing() {
         return canvas;
       }
 
-      function compareImages() {
+      async function compareImages() {
         // console.clear();
-        var cnvBefore = convertImageToCanvas("imagePixel1");
-        var cnvAfter = convertImageToCanvas("imagePixel2");
+        var cnvBefore = await convertImageToCanvas("imagePixel1");
+        var cnvAfter = await convertImageToCanvas("imagePixel2");
         console.log(cnvBefore);
         var ctxBefore = cnvBefore.getContext("2d");
         var ctxAfter = cnvAfter.getContext("2d");
