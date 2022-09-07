@@ -1,7 +1,3 @@
-// import { finishedTimer } from "./finished.mjs";
-
-// let socket = io();
-
 //startfunktion som skickar rum och användarnamn till socket i.o
 //Om lyckat så försvinner login och chat + spelyta visas.
 export function startGame(username) {
@@ -26,20 +22,6 @@ export function outputUsers(users) {
     userInRoom.style.color = "white";
     userInRoom.style.border = "5px solid" + user.userColor;
     userInRoom.style.boxShadow = "0px 0px 5px 5px" + user.userColor;
-    // if (user.userColor === "#008000") {
-    //   document.getElementById("header").style.backgroundColor =
-    //     "rgba(0, 128, 0, 0.608)";
-    // } else if (user.userColor === "#0000ff") {
-    //   document.getElementById("header").style.backgroundColor =
-    //     "rgba(44, 126, 173, 0.553";
-    // } else if (user.userColor === "#ffff00") {
-    //   document.getElementById("header").style.backgroundColor =
-    //     "rgba(188, 190, 23, 0.575)";
-    // } else if (user.userColor === "#ff0000") {
-    //   document.getElementById("header").style.backgroundColor =
-    //     "rgba(190, 23, 23, 0.575)";
-    // }
-
     userList.append(userInRoom);
   });
 }
