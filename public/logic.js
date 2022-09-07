@@ -16,12 +16,9 @@ import {
   startGame,
 } from "./modules/login.js";
 
-
 import { createPixel } from "./modules/animation.mjs";
 
-
 import { finishedMessage } from "./modules/finished.mjs";
-
 
 let socket = io();
 
@@ -120,7 +117,6 @@ let imageFacit;
 let compareImage1 = new Image();
 let compareImage2 = new Image();
 
-
 //startknapp som skickar användare och rum
 buttonGoToRoom.addEventListener("click", function () {
   // let room = "Room";
@@ -143,14 +139,13 @@ let doneList = [];
 //Få alla användare från början av sessionen
 
 socket.on("usersFromStart", ({ allUsersFromStart }) => {
-
   let image;
   //If sats för att få random bilder som facitbilder att efterskapa
   console.log("ALLA ANVÄNDARE FRÅN START I RUMMET");
   console.log(allUsersFromStart);
   if (allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
-    socket.on("getRandomImage", randomNumberFromSocket => {
+    socket.on("getRandomImage", (randomNumberFromSocket) => {
       console.log(randomNumberFromSocket);
       if (randomNumberFromSocket === 0) {
         image = facit1;
@@ -196,7 +191,7 @@ drawGrid(context);
 canvas.addEventListener(
   "click",
   function (evt) {
-    let thisUser = userArray.find(x => x.id === socket.id);
+    let thisUser = userArray.find((x) => x.id === socket.id);
 
     //Hämtar positionen för klickad ruta
     var mousePos = getSquare(canvas, evt);
@@ -241,16 +236,14 @@ document.getElementById("btnContainer").append(finishedBtn);
 saveBtn.append(saveBtnText);
 
 //Spara bild
-saveBtn.addEventListener("click", async e => {
+saveBtn.addEventListener("click", async (e) => {
   // Konverterar bilden till en sträng
   const link = document.createElement("a");
   link.download = "download.png";
   link.href = canvas.toDataURL();
 
-
   let disable = true;
   socket.emit("disableSaveBtn", disable);
-
 
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
@@ -272,9 +265,9 @@ saveBtn.addEventListener("click", async e => {
   console.log(response);
 });
 
-socket.on("disableSaveBtn", function(disableSaveBtn){
+socket.on("disableSaveBtn", function (disableSaveBtn) {
   console.log(disableSaveBtn);
-  document.getElementById("saveBtn").disabled = disableSaveBtn;
+  saveBtn.disabled = disableSaveBtn;
 });
 
 finishedBtn.addEventListener("click", userFinishedDrawing);
@@ -286,7 +279,7 @@ function userFinishedDrawing() {
   finishedBtn.disabled = true;
   finishedMessage();
   socket.emit("finishedUser", socket.id);
-  socket.on("finishedUser", booleanFinished => {
+  socket.on("finishedUser", (booleanFinished) => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
     if (booleanFinished === true) {
       let imageToPaint = imageFacit;
@@ -307,7 +300,9 @@ function userFinishedDrawing() {
         var canvas = document.createElement("canvas");
         canvas.width = image.width;
         canvas.height = image.height;
-        canvas.getContext("2d").drawImage(image, 0, 0, 301, 301);
+        canvas
+          .getContext("2d")
+          .drawImage(image, 0, 0, canvas.height, canvas.width);
 
         return canvas;
       }
@@ -415,7 +410,6 @@ function renderImages(data) {
   if (imageContainer.innerHTML !== "") {
     imageContainer.innerHTML = "";
     galleryBtn.innerText = "Visa galleri";
-
   } else {
     galleryBtn.innerText = "Dölj galleri";
     for (let i = 0; i < data.length; i++) {
