@@ -216,7 +216,7 @@ socket.on("draw", function (draw) {
   img.src = draw;
 
   function start() {
-    console.log(draw);
+    // console.log(draw);
     context.drawImage(img, 0, 0);
   }
   start();
