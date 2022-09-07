@@ -291,7 +291,7 @@ function userFinishedDrawing() {
         var canvas = document.createElement("canvas");
         canvas.width = image.width;
         canvas.height = image.height;
-        canvas.getContext("2d").drawImage(image, 0, 0);
+        canvas.getContext("2d").drawImage(image, 0, 0, 301, 301);
 
         return canvas;
       }
