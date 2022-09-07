@@ -302,7 +302,7 @@ function userFinishedDrawing() {
         canvas.height = 301;
         canvas
           .getContext("2d")
-          .drawImage(image, 1, 1, canvas.height, canvas.width);
+          .drawImage(image, 0, 0, canvas.height, canvas.width);
 
         return canvas;
       }
