@@ -4,21 +4,34 @@ export function sendBtnFunction(){
     let message = document.getElementsByClassName("chatInput")[0].value;
     console.log(message);
 
+
     return message;
 }
 
 // skapar och sätter färg på meddelande 
 export function userColorStyle(senderId, socketId, userColor, sender, message){
 
+  
     let chatMessage = document.createElement("div");
     chatMessage.classList.add("chatMessage");
     chatMessage.id = 'chatMessage';
-    chatMessage.innerText = sender + " : " + message;
 
+    // lägger till tiden på meddelandet
+    let date = new Date()
+    let minutes = ("0" + date.getMinutes()).substr(-2);
+    let hours = date.getHours()
+    let setTime = hours + ':' + minutes + " "
+    console.log(setTime);
+
+    let rightTime = document.createElement('p')
+    rightTime.innerText = setTime
+    rightTime.id = 'rightTime'
+    
+    chatMessage.innerText = setTime + sender + " : " + message;
+  
     if (senderId === socketId) {
         chatMessage.style.justifyContent = "flex-end";
       }
-    
       if (userColor === "#008000") {
         chatMessage.style.backgroundColor = "rgba(0, 128, 0, 0.608)";
       } else if (userColor === "#0000ff") {
@@ -30,7 +43,6 @@ export function userColorStyle(senderId, socketId, userColor, sender, message){
       }
 
       console.log(senderId, socketId, userColor);
-
       return chatMessage;
 }
 
