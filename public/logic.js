@@ -302,15 +302,15 @@ function userFinishedDrawing() {
         canvas.height = image.height;
         canvas
           .getContext("2d")
-          .drawImage(image, 0, 0, canvas.height, canvas.width);
+          .drawImage(image, 1, 1, canvas.height, canvas.width);
 
         return canvas;
       }
 
-      async function compareImages() {
+      function compareImages() {
         // console.clear();
-        var cnvBefore = await convertImageToCanvas("imagePixel1");
-        var cnvAfter = await convertImageToCanvas("imagePixel2");
+        var cnvBefore = convertImageToCanvas("imagePixel1");
+        var cnvAfter = convertImageToCanvas("imagePixel2");
         console.log(cnvBefore);
         var ctxBefore = cnvBefore.getContext("2d");
         var ctxAfter = cnvAfter.getContext("2d");
