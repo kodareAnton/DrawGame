@@ -281,7 +281,9 @@ function userFinishedDrawing() {
   socket.emit("finishedUser", socket.id);
   socket.on("finishedUser", (booleanFinished) => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
+    console.log(booleanFinished);
     if (booleanFinished === true) {
+      console.log("inne i if" + booleanFinished);
       let imageToPaint = imageFacit;
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
       let facitImg = new Image();
