@@ -303,7 +303,7 @@ function userFinishedDrawing() {
         canvas
           .getContext("2d")
           .drawImage(image, 0, 0, canvas.height, canvas.width);
-
+        console.log(image);
         return canvas;
       }
 
@@ -332,6 +332,11 @@ function userFinishedDrawing() {
         const wdth = imgDataBefore.width;
 
         var imgDataOutput = new ImageData(wdth, hght);
+        console.log(imgDataAfter.data);
+        console.log(imgDataAfter.data);
+        console.log(imgDataOutput.data);
+        console.log(wdth);
+        console.log(hght);
 
         var numDiffPixels = pixelmatch(
           imgDataBefore.data,
