@@ -16,6 +16,8 @@ import {
   startGame,
 } from "./modules/login.js";
 
+import { createPixel } from "./modules/animation.mjs";
+
 import { finishedPlaying } from "./modules/compareImg.mjs";
 // import { PNG } from "pngjs";
 // import pixelmatch from "./../app.js";
@@ -69,6 +71,7 @@ logOutBtn.classList = "logOutBtn";
 let root = document.getElementById("root");
 let main = document.createElement("main");
 main.className = "main";
+main.id = "main";
 
 let containerWelcome = document.createElement("div");
 containerWelcome.className = "containerWelcome";
@@ -95,6 +98,10 @@ buttonGoToRoom.innerText = "Starta spel";
 let waitBanner = document.getElementById("waitBanner");
 waitBanner.innerText = "Vi väntar på fler spelare!";
 
+// Pixel regn
+
+setInterval(createPixel, 200);
+
 //Appends
 root.append(main);
 header.append(containerUserList, logOutBtn);
@@ -120,7 +127,7 @@ let room;
 let counterRoom = 0;
 
 function updateUserlist() {
-  socket.on("userlist", (arrayFromSocketRoom) => {
+  socket.on("userlist", arrayFromSocketRoom => {
     console.log(arrayFromSocketRoom);
     usersArrayFromStart = arrayFromSocketRoom;
   });
@@ -221,7 +228,7 @@ buttonGoToRoom.addEventListener("click", function () {
 logOutBtn.addEventListener("click", leaveGame);
 
 //Få alla användare från början av sessionen
-socket.on("usersFromStart", (allUsersFromStart) => {
+socket.on("usersFromStart", allUsersFromStart => {
   // console.log(booleanFinished);
 
   //If sats för att få random bilder som facitbilder att efterskapa
@@ -229,7 +236,7 @@ socket.on("usersFromStart", (allUsersFromStart) => {
   console.log(allUsersFromStart.allUsersFromStart);
   if (allUsersFromStart.allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
-    socket.on("getRandomImage", (randomNumberFromSocket) => {
+    socket.on("getRandomImage", randomNumberFromSocket => {
       console.log(randomNumberFromSocket);
       if (randomNumberFromSocket === 0) {
         image = facit1;
@@ -267,7 +274,7 @@ drawGrid(context);
 canvas.addEventListener(
   "click",
   function (evt) {
-    let thisUser = userArray.find((x) => x.id === socket.id);
+    let thisUser = userArray.find(x => x.id === socket.id);
 
     //Hämtar positionen för klickad ruta
     var mousePos = getSquare(canvas, evt);
@@ -311,12 +318,11 @@ document.getElementById("btnContainer").append(saveBtn, finishedBtn);
 saveBtn.append(saveBtnText);
 
 //Spara bild
-saveBtn.addEventListener("click", async (e) => {
+saveBtn.addEventListener("click", async e => {
   // Konverterar bilden till en sträng
   const link = document.createElement("a");
   link.download = "download.png";
   link.href = canvas.toDataURL();
-
 
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
@@ -325,14 +331,16 @@ saveBtn.addEventListener("click", async (e) => {
   saveBtn.disabled = true;
 
   let response = await fetch(
-    //"http://localhost:3000/images" 
-    "https://heroku-drawgame.herokuapp.com/images", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(imgToSave),
-  });
+    //"http://localhost:3000/images"
+    "https://heroku-drawgame.herokuapp.com/images",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(imgToSave),
+    }
+  );
 
   console.log(response);
 });
@@ -340,7 +348,7 @@ saveBtn.addEventListener("click", async (e) => {
 finishedBtn.addEventListener("click", () => {
   finishedBtn.disabled = true;
   socket.emit("finishedUser", socket.id);
-  socket.on("finishedUser", (booleanFinished) => {
+  socket.on("finishedUser", booleanFinished => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
     if (booleanFinished === true) {
       // socket.emit("finishedImages", image);
@@ -448,8 +456,9 @@ imageContainer.classList.add("imageContainer");
 galleryBtn.addEventListener("click", async () => {
   try {
     let response = await fetch(
-    //"http://localhost:3000/images"
-    "https://heroku-drawgame.herokuapp.com/images");
+      //"http://localhost:3000/images"
+      "https://heroku-drawgame.herokuapp.com/images"
+    );
     console.log(response);
     let data = await response.json();
 

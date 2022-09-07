@@ -59,6 +59,7 @@
 }
 
 #root {
+  z-index: 1;
   position: relative;
   left: 0;
   top: 0;
@@ -136,6 +137,25 @@
   background-color: rgba(0, 0, 0, 0.538);
 }
 
+/* Styling för regnande pixlar */
+
+.pixel {
+  position: fixed;
+  top: -1vh;
+  transform: translate(0);
+  animation: pixel 6s linear forwards;
+  user-select: none;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.3);
+  z-index: -1;
+}
+@keyframes pixel {
+  to {
+    transform: translateY(105vh);
+  }
+}
+
 h1,
 p {
   color: white;
@@ -175,7 +195,7 @@ button:focus {
   box-shadow: inset 0px 0px 5px #c1c1c1;
 }
 
-button:hover{
+button:hover {
   background-color: rgba(175, 45, 214, 0.836);
 }
 
