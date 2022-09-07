@@ -298,8 +298,8 @@ function userFinishedDrawing() {
       function convertImageToCanvas(imageID) {
         var image = document.getElementById(imageID);
         var canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
+        canvas.width = 301;
+        canvas.height = 301;
         canvas
           .getContext("2d")
           .drawImage(image, 1, 1, canvas.height, canvas.width);
