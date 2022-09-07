@@ -183,7 +183,7 @@ button:focus {
   box-shadow: inset 0px 0px 5px #c1c1c1;
 }
 
-button:hover{
+button:hover {
   background-color: rgba(175, 45, 214, 0.836);
 }
 
@@ -254,6 +254,22 @@ img {
 }
 
 
+button {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px;
+  background-color: rgba(50, 50, 216, 0.678);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+button:disabled {
+  background-color: lightgray;
+}
+
+
 .roomAndChatContainer {
   display: flex;
   flex-grow: 1;
@@ -289,9 +305,10 @@ img {
 .chatMessage {
   display: flex;
   align-items: center;
+  max-width: 100%;
   padding-left: 1em;
   padding-right: 1em;
-  height: 3em;
+  min-height: 3em;
   border-radius: 5px;
   margin: 1%;
   color: white;
@@ -309,9 +326,9 @@ img {
   width: 100%;
 }
 
-#saveBtn {
+/* #saveBtn {
   display: none;
-}
+} */
 
 .sendBtn {
   margin: 0;
@@ -319,4 +336,11 @@ img {
 
 #chatt {
   display: block;
+}
+
+.containerScore {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
