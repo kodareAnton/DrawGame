@@ -59,6 +59,7 @@
 }
 
 #root {
+  z-index: 1;
   position: relative;
   left: 0;
   top: 0;
@@ -70,6 +71,9 @@
   justify-content: center;
   align-items: center;
   background-image: url("/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
@@ -84,6 +88,9 @@
   width: 100vw;
   height: 100vh;
   background-image: url("/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: none;
 }
 
@@ -136,6 +143,25 @@
   background-color: rgba(0, 0, 0, 0.538);
 }
 
+/* Styling för regnande pixlar */
+
+.pixel {
+  position: fixed;
+  top: -1vh;
+  transform: translate(0);
+  animation: pixel 6s linear forwards;
+  user-select: none;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.3);
+  z-index: -1;
+}
+@keyframes pixel {
+  to {
+    transform: translateY(105vh);
+  }
+}
+
 h1,
 p {
   color: white;
@@ -165,7 +191,6 @@ button {
   cursor: pointer;
 }
 
-
 button:active {
   background: #e5e5e5;
   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
@@ -187,7 +212,7 @@ button:hover {
   background-color: rgba(175, 45, 214, 0.836);
 }
 
-button:disabled{
+button:disabled {
   background-color: rgba(255, 0, 0, 0.315);
 }
 
@@ -278,7 +303,6 @@ img {
   color: white;
 }
 
-
 button {
   padding: 10px;
   border-radius: 5px;
@@ -299,7 +323,6 @@ button {
 button:disabled {
   background-color: lightgray;
 }
-
 
 .roomAndChatContainer {
   display: flex;

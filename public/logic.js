@@ -16,22 +16,15 @@ import {
   startGame,
 } from "./modules/login.js";
 
+import { createPixel } from "./modules/animation.mjs";
+
 import { finishedMessage } from "./modules/finished.mjs";
 
-import { finishedPlaying } from "./modules/compareImg.mjs";
-// import { PNG } from "pngjs";
-// import pixelmatch from "./../app.js";
-
-// import pixelmatch from "pixelmatch";
 let socket = io();
-
-let usersArrayFromStart = [];
 
 socket.on("connect", () => {
   console.log(socket.id + " A user joined");
 });
-// let pixelmatch = pixelmatch;
-// finishedPlaying(socket.id);
 
 //FACIT EXEMPEL Man får dissa min art ;)
 //Blomma
@@ -73,6 +66,7 @@ logOutBtn.classList = "logOutBtn";
 let root = document.getElementById("root");
 let main = document.createElement("main");
 main.className = "main";
+main.id = "main";
 
 let containerWelcome = document.createElement("div");
 containerWelcome.className = "containerWelcome";
@@ -99,6 +93,10 @@ buttonGoToRoom.innerText = "Starta spel";
 let waitBanner = document.getElementById("waitBanner");
 waitBanner.innerText = "Vi väntar på fler spelare!";
 
+// Pixel regn
+
+setInterval(createPixel, 200);
+
 //Appends
 root.append(main);
 header.append(containerUserList, logOutBtn);
@@ -119,40 +117,31 @@ let imageFacit;
 let compareImage1 = new Image();
 let compareImage2 = new Image();
 
-let room;
-
-let counterRoom = 0;
-
-function updateUserlist() {
-  socket.on("userlist", (arrayFromSocketRoom) => {
-    console.log(arrayFromSocketRoom);
-    usersArrayFromStart = arrayFromSocketRoom;
-  });
-}
-updateUserlist();
-
 //startknapp som skickar användare och rum
 buttonGoToRoom.addEventListener("click", function () {
   // let room = "Room";
   username = inputUser.value;
   nickname = username;
-  startGame(username);
-  if (startGame(username) === "validationFail") {
-    console.log(startGame(username));
+  let startGameVar = startGame(username);
+  if (startGameVar === "validationFail") {
+    console.log("inget namn");
     return;
   } else {
     socket.emit("joinRoom", { username });
   }
 });
+
+//Lämna spel
 logOutBtn.addEventListener("click", leaveGame);
 
+//Lista för snar på promise, kommer 3 stycken.
 let doneList = [];
-
 //Få alla användare från början av sessionen
+
 socket.on("usersFromStart", ({ allUsersFromStart }) => {
-  // console.log(booleanFinished);
   let image;
   //If sats för att få random bilder som facitbilder att efterskapa
+  console.log("ALLA ANVÄNDARE FRÅN START I RUMMET");
   console.log(allUsersFromStart);
   if (allUsersFromStart.length === 4) {
     socket.emit("getRandomImage");
@@ -170,7 +159,7 @@ socket.on("usersFromStart", ({ allUsersFromStart }) => {
       } else if (randomNumberFromSocket === 4) {
         image = facit5;
       }
-      console.log(image);
+
       imageFacit = image;
 
       startGameOnUser(image, allUsersFromStart, socket.id).then((done) => {
@@ -227,7 +216,7 @@ socket.on("draw", function (draw) {
   img.src = draw;
 
   function start() {
-    console.log(draw);
+    // console.log(draw);
     context.drawImage(img, 0, 0);
   }
   start();
@@ -253,6 +242,9 @@ saveBtn.addEventListener("click", async (e) => {
   link.download = "download.png";
   link.href = canvas.toDataURL();
 
+  let disable = true;
+  socket.emit("disableSaveBtn", disable);
+
   //TODO ändra till HEROKU adress sedan.
   let imgToSave = { imageUrl: link.href };
   console.log(imgToSave);
@@ -273,6 +265,11 @@ saveBtn.addEventListener("click", async (e) => {
   console.log(response);
 });
 
+socket.on("disableSaveBtn", function (disableSaveBtn) {
+  console.log(disableSaveBtn);
+  saveBtn.disabled = disableSaveBtn;
+});
+
 finishedBtn.addEventListener("click", userFinishedDrawing);
 
 function userFinishedDrawing() {
@@ -284,34 +281,38 @@ function userFinishedDrawing() {
   socket.emit("finishedUser", socket.id);
   socket.on("finishedUser", (booleanFinished) => {
     // console.log("FÄRDIGA SPELARE" + finishedArray.length);
+    console.log(booleanFinished);
     if (booleanFinished === true) {
+      console.log("inne i if" + booleanFinished);
       let imageToPaint = imageFacit;
       //TODO här ska logiken för hur "RÄTT" bilden är vara.
-      let image1 = new Image();
-      image1.id = "imagePixel1";
-      image1.src = imageToPaint;
       let facitImg = new Image();
-      facitImg.id = "imagePixel2";
-      facitImg.src = canvas.toDataURL();
+      facitImg.id = "imagePixel1";
+      facitImg.src = imageToPaint;
+      // image1 = new Image();
+      // image1.id = "imagePixel2";
+      // image1.src = canvas.toDataURL();
       compareImage1.src = imageToPaint;
       compareImage2.src = canvas.toDataURL();
-
-      root.append(image1, facitImg);
+      //image1
+      root.append(facitImg);
 
       function convertImageToCanvas(imageID) {
         var image = document.getElementById(imageID);
         var canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        canvas.getContext("2d").drawImage(image, 0, 0);
-
+        canvas.width = 301;
+        canvas.height = 301;
+        canvas
+          .getContext("2d")
+          .drawImage(image, 0, 0, canvas.height, canvas.width);
+        console.log(image);
         return canvas;
       }
 
       async function compareImages() {
         // console.clear();
         var cnvBefore = await convertImageToCanvas("imagePixel1");
-        var cnvAfter = await convertImageToCanvas("imagePixel2");
+        var cnvAfter = await document.getElementById("myCanvas");
         console.log(cnvBefore);
         var ctxBefore = cnvBefore.getContext("2d");
         var ctxAfter = cnvAfter.getContext("2d");
@@ -333,6 +334,9 @@ function userFinishedDrawing() {
         const wdth = imgDataBefore.width;
 
         var imgDataOutput = new ImageData(wdth, hght);
+        console.log(imgDataAfter.data);
+        console.log(imgDataBefore.data);
+        console.log(imgDataOutput.data);
 
         var numDiffPixels = pixelmatch(
           imgDataBefore.data,
@@ -410,7 +414,9 @@ function renderImages(data) {
   console.log(data);
   if (imageContainer.innerHTML !== "") {
     imageContainer.innerHTML = "";
+    galleryBtn.innerText = "Visa galleri";
   } else {
+    galleryBtn.innerText = "Dölj galleri";
     for (let i = 0; i < data.length; i++) {
       let img = document.createElement("img");
       img.src = data[i].imageUrl;
