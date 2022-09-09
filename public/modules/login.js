@@ -85,11 +85,11 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
         document
           .getElementById("btnContainer")
           .append(titelForTime, counterForGame);
-        var counter2 = 37;
+        var counter2 = 67;
 
         setInterval(function () {
           counter2--;
-          if (counter2 < 30) {
+          if (counter2 < 60) {
             counterForGame.innerHTML = counter2;
           }
 
@@ -106,7 +106,6 @@ export function startGameOnUser(imageFromSocket, allUsersFromStart, socketID) {
             }
           }
         }, 1000);
-        // });
       }
     }, 1000);
   });
